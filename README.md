@@ -50,8 +50,8 @@ El proceso de Elicitación está en el documento Requisitos.docx. Incluye link a
 ### Front
 
 - Crear componentes reutilizables:
-    - Botones
-    - Layouts
+  - Botones
+  - Layouts
 - Crear vistas estáticas
 - Crear vistas dinámicas
 - Validar datos
@@ -60,8 +60,8 @@ El proceso de Elicitación está en el documento Requisitos.docx. Incluye link a
 ### Back
 
 - Integrar Backend con Server Actions:
-    - Autenticación
-    - Base de datos
+  - Autenticación
+  - Base de datos
 
 # RECURSOS
 
