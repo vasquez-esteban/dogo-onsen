@@ -4,20 +4,20 @@ import {
   CardDescription,
   CardHeader,
 } from "@/components/ui/card";
-import { FormSignup } from "./FormSignup";
+import FormReservationClient from "./FormReservation";
 
 export default function Page() {
   return (
     <>
-      <h1>Desde ahora te llamarás...</h1>
+      <h1>Reserva Baño</h1>
       <Card>
         <CardHeader>
           <CardDescription>
-            Regístrate para comenzar tu viaje hacia la paz y la serenidad
+            Diligencia el formulario para poder darte tu espacio
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <FormSignup></FormSignup>
+          <FormReservationClient></FormReservationClient>
         </CardContent>
       </Card>
     </>

@@ -2,7 +2,7 @@ import authImg from "@/assets/img-auth.png";
 import Image from "next/image";
 import { ReactNode } from "react";
 
-const AuthLayout = ({ children }: { children: ReactNode }) => {
+const ReservationLayout = ({ children }: { children: ReactNode }) => {
   return (
     <div className="flex w-screen items-center justify-center">
       <div className="mx-auto w-full max-w-[400px]">
@@ -21,4 +21,4 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export default AuthLayout;
+export default ReservationLayout;

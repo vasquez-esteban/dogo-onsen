@@ -1,0 +1,41 @@
+"use server";
+
+import { FormState } from "@/app/(routes)/reservation/definitions";
+
+export type ReservationData = {
+  date: Date;
+  time: string;
+  spirits: string;
+  includeSpecialSoaps: boolean;
+};
+
+export async function createReservation(
+  formData: FormData
+): Promise<FormState> {
+  try {
+    // Simulate a delay to show loading state
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    const date = new Date(formData.get("date") as string);
+    const time = formData.get("time") as string;
+    const spirits = formData.get("spirits") as string;
+    const includeSpecialSoaps = formData.get("includeSpecialSoaps") === "true";
+
+    console.log("Reservation created:", {
+      date,
+      time,
+      spirits,
+      includeSpecialSoaps,
+    });
+
+    return {
+      success: true,
+      message: "Reserva creada exitosamente",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: `${error} Error al crear la reserva`,
+    };
+  }
+}
