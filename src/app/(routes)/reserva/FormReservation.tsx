@@ -25,32 +25,12 @@ import { redirect } from "next/navigation";
 import * as React from "react";
 import { useFormStatus } from "react-dom";
 
-function SubmitButton() {
-  const { pending } = useFormStatus();
-
-  return (
-    <Button
-      type="submit"
-      className="mt-4 w-full bg-gray-900 text-white hover:bg-gray-800"
-      disabled={pending}
-    >
-      {pending ? (
-        <>
-          <Loader2 className="mr-2 size-4 animate-spin" />
-          Procesando...
-        </>
-      ) : (
-        "Reservar"
-      )}
-    </Button>
-  );
-}
-
 export default function FormReservationClient() {
   const [date, setDate] = React.useState<Date>();
   const [time, setTime] = React.useState("13:00");
   const [spirits, setSpirits] = React.useState("1");
   const [includeSpecialSoaps, setIncludeSpecialSoaps] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
   // Generar los rangos de tiempo de 8AM a 8PM
   const timeSlots = Array.from({ length: 13 }, (_, i) => {
@@ -72,15 +52,18 @@ export default function FormReservationClient() {
       redirect("/");
     } else {
       console.log("Error Message");
+      setErrorMessage(result?.message ?? null);
     }
   }
 
   return (
     <form action={handleSubmit}>
       <div className="space-y-4">
+        {errorMessage && <p className="text-sm text-red-500">{errorMessage}</p>}
         <div className="space-y-2">
           <Label htmlFor="date">Fecha:</Label>
           <Popover>
+            {/* Datepicker from shadcn */}
             <PopoverTrigger asChild>
               <Button
                 variant={"outline"}
@@ -97,21 +80,17 @@ export default function FormReservationClient() {
               <Calendar
                 mode="single"
                 selected={date}
-                onSelect={(newDate) => {
-                  setDate(newDate);
-                  if (newDate) {
-                    const input = document.createElement("input");
-                    input.type = "hidden";
-                    input.name = "date";
-                    input.value = newDate.toISOString();
-                    document.forms[0].appendChild(input);
-                  }
-                }}
+                onSelect={setDate}
                 locale={es}
                 initialFocus
               />
             </PopoverContent>
           </Popover>
+          <input
+            type="hidden"
+            name="date"
+            value={date ? date.toISOString() : ""}
+          />
         </div>
 
         <div className="space-y-2">
@@ -171,3 +150,24 @@ export default function FormReservationClient() {
     </form>
   );
 }
+
+const SubmitButton = () => {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button
+      type="submit"
+      className="mt-4 w-full bg-gray-900 text-white hover:bg-gray-800"
+      disabled={pending}
+    >
+      {pending ? (
+        <>
+          <Loader2 className="mr-2 size-4 animate-spin" />
+          Procesando...
+        </>
+      ) : (
+        "Reservar"
+      )}
+    </Button>
+  );
+};

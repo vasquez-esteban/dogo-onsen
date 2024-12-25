@@ -1,4 +1,4 @@
-import authImg from "@/assets/img-auth.png";
+import authImg from "@/assets/img-auth.webp";
 import Image from "next/image";
 import { ReactNode } from "react";
 

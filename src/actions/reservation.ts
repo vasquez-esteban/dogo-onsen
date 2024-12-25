@@ -1,6 +1,6 @@
 "use server";
 
-import { FormState } from "@/app/(routes)/reservation/definitions";
+import { FormState } from "@/app/(routes)/reserva/definitions";
 
 export type ReservationData = {
   date: Date;
@@ -20,6 +20,13 @@ export async function createReservation(
     const time = formData.get("time") as string;
     const spirits = formData.get("spirits") as string;
     const includeSpecialSoaps = formData.get("includeSpecialSoaps") === "true";
+
+    if (isNaN(date.getTime())) {
+      return {
+        success: false,
+        message: "Fecha inválida",
+      };
+    }
 
     console.log("Reservation created:", {
       date,

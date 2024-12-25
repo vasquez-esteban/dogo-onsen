@@ -1,6 +1,7 @@
 import { inknut, poppins } from "@/styles/fonts";
 import type { Metadata } from "next";
 import "../styles/globals.css";
+import MainLayout from "./layouts/MainLayout";
 import LenisScrollProvider from "./providers/lenis";
 
 export const metadata: Metadata = {
@@ -16,7 +17,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${poppins.variable} ${inknut.variable} antialiased`}>
-        <LenisScrollProvider>{children}</LenisScrollProvider>
+        <LenisScrollProvider>
+          <MainLayout>{children}</MainLayout>
+        </LenisScrollProvider>
       </body>
     </html>
   );
