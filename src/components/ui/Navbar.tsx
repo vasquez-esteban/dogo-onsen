@@ -20,7 +20,7 @@ const Navbar = () => {
             <Image src={navlogo} className="h-8 w-6" alt="Company logo"></Image>
           </Link>
         </div>
-        <ul className="mx-4 flex h-12 w-full items-center justify-center space-x-[4vw] rounded-md bg-primarylight">
+        <ul className="mx-4 flex h-12 w-full items-center justify-center space-x-[3vw] rounded-md bg-primarylight">
           {navLinks.map((link) => (
             <li key={link.href}>
               <Link

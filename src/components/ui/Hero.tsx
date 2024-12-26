@@ -1,4 +1,4 @@
-import heroArticles from "@/assets/card1.webp";
+import heroArticles from "@/assets/card2.webp";
 import heroBano from "@/assets/hero-bano.webp";
 import heroInfo from "@/assets/hero-info.webp";
 import heroLanding from "@/assets/hero-landing.webp";

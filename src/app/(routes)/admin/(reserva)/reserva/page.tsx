@@ -4,7 +4,7 @@ import Hero from "@/components/ui/Hero";
 const Page = () => {
   return (
     <div>
-      <Hero type="Banos"></Hero>
+      <Hero type="Reservas"></Hero>
       <section>
         <Container>
           <div></div>
