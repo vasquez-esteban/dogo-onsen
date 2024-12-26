@@ -1,18 +1,23 @@
 # REQUERIMIENTOS
 
-- Se necesita pnpm 9.15.0 y Node 22.12.0 (LTS).
+- Se necesita pnpm >9.15.1 y Node 22.12.0 (LTS).
 
 Para correr localmente usar `pnpm install` y `pnpm run dev`
+
+**Importante antes de hacer push**
+
+- Correr `pmpm run lint`. Si el resultado da errores, el push puede fallar.
+- Correr `pnpm run fmt`. Para formatear código y mantener consistencia.
 
 ## Dependencias principales
 
 ### - `next`:
 
-es un **framework** para react que simplifica la creación de aplicaciones web modernas. next.js incluye muchas funcionalidades listas para usar, como renderizado del lado del servidor (ssr), generación de sitios estáticos (ssg) y más, lo que facilita crear aplicaciones completas, tanto de frontend como backend.
+Es un **framework** para React que simplifica la creación de aplicaciones web modernas. Next.js incluye muchas funcionalidades listas para usar, como renderizado del lado del servidor (SSR), generación de sitios estáticos (SSG) y más, lo que facilita crear aplicaciones completas, tanto de frontend como backend.
 
 ### - `tailwind`:
 
-Es un **framework de CSS** que permite escribir estilos de manera más rápida y modular. En lugar de crear clases CSS desde cero, puedes usar clases predefinidas de Tailwind para diseñar rápidamente tu interfaz de usuario sin necesidad de escribir CSS detallado.
+Es un **framework de CSS** que permite escribir estilos de manera más rápida y modular. En lugar de crear clases CSS desde cero, Tailwind permite diseñar rápidamente la interfaz de usuario sin necesidad de escribir CSS detallado.
 
 ### - `Shadcn`:
 
@@ -20,18 +25,14 @@ Es una **librería de componentes** para React que ofrece una colección de comp
 
 ### - `eslint` & `prettier`:
 
-- **`eslint`**: Es una herramienta que ayuda a encontrar errores en tu código JavaScript y asegura que sigas buenas prácticas.
-- **`prettier`**: Es un formateador de código que asegura que todo tu código siga un estilo consistente, lo que hace que sea más fácil de leer y mantener.
+- **`eslint`**: Es una herramienta que ayuda a encontrar errores en código TypeScript y asegura las buenas prácticas.
+- **`prettier`**: Es un formateador de código que asegura que el código siga un estilo consistente, lo que hace que sea más fácil de leer y mantener.
 
-## Base de datos (Escoger una)
-
-### - `firebase (NoSQL)`:
-
-**Firebase** es una plataforma de desarrollo backend de Google que ofrece bases de datos **NoSQL** en tiempo real, autenticación, almacenamiento y más. Ideal para aplicaciones que necesitan escalabilidad rápida y fácil integración con servicios de Google.
+## Base de datos
 
 ### - `supabase (SQL)`:
 
-**Supabase** es una alternativa a Firebase basada en **SQL** (PostgreSQL). Ofrece bases de datos, autenticación, almacenamiento y funciones en tiempo real. Es una opción ideal si prefieres trabajar con bases de datos relacionales y un enfoque de código abierto.
+**Supabase** es una backend as a service **SQL** (PostgreSQL). Ofrece bases de datos, autenticación, almacenamiento y funciones en tiempo real.
 
 # ELICITACIÓN
 
@@ -49,13 +50,8 @@ El proceso de Elicitación está en el documento Requisitos.docx. Incluye link a
 
 ### Front
 
-- Crear componentes reutilizables:
-  - Botones
-  - Layouts
-- Crear vistas estáticas
-- Crear vistas dinámicas
-- Validar datos
-- Extraer datos en JSON
+- Actualmente en versión inicial.
+- Faltan detalles de UI, lógicas de validación, enrutamiento y formularios.
 
 ### Back
 
@@ -64,6 +60,10 @@ El proceso de Elicitación está en el documento Requisitos.docx. Incluye link a
   - Base de datos
 
 # RECURSOS
+
+### Link de Producción
+
+[Link Dogo Onsen](https://dogo-onsen.vercel.app/)
 
 ### Drive
 

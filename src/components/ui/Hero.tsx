@@ -47,7 +47,7 @@ const Hero = ({ type }: { type: string }) => {
   const { src, alt, title } = pic;
 
   return (
-    <section className="relative h-screen w-full">
+    <section className="relative h-screen max-h-[1000px] w-full">
       <Image
         src={src}
         alt={alt}

@@ -1,6 +1,6 @@
 "use client";
 
-import { searchBano } from "@/actions/bathroom";
+import { searchReservation } from "@/actions/reservation";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Label } from "@/components/ui/label";
@@ -23,11 +23,11 @@ import { CalendarIcon, Loader2 } from "lucide-react";
 import * as React from "react";
 import { useFormStatus } from "react-dom";
 
-const ReservationWidget = () => {
+const WidgetSearchReservation = () => {
   return (
     <div className="flex flex-col gap-5 rounded-[44px] bg-primarylight p-[8vw]">
-      <h2 className="h2-xl text-center">Reservar un Baño</h2>
-      <p className="text-center">Descubre tu espacio perfecto para relajarte</p>
+      <h2 className="h2-xl text-center">Buscar reservas existentes</h2>
+      <p className="text-center">Busca las reservas hechas hasta ahora</p>
       <ReservationSearch></ReservationSearch>
     </div>
   );
@@ -36,7 +36,7 @@ const ReservationWidget = () => {
 const ReservationSearch = () => {
   const [date, setDate] = React.useState<Date>();
   const [time, setTime] = React.useState("13:00");
-  const [spirits, setSpirits] = React.useState("1");
+  const [type, setType] = React.useState("1");
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
   // Generar los rangos de tiempo de 8AM a 8PM
@@ -46,14 +46,14 @@ const ReservationSearch = () => {
   });
 
   async function handleSubmit(formData: FormData) {
-    const result = await searchBano(formData);
+    const result = await searchReservation(formData);
 
     if (result?.success) {
       console.log(result.message);
 
       setDate(undefined);
       setTime("13:00");
-      setSpirits("1");
+      setType("1");
     } else {
       console.log("Error Message");
       setErrorMessage(result?.message ?? null);
@@ -116,13 +116,13 @@ const ReservationSearch = () => {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="spirits">Espíritus:</Label>
-          <Select name="spirits" value={spirits} onValueChange={setSpirits}>
+          <Label htmlFor="type">Tipo del baño:</Label>
+          <Select name="type" value={type} onValueChange={setType}>
             <SelectTrigger>
-              <SelectValue placeholder="Seleccionar cantidad" />
+              <SelectValue placeholder="Seleccionar tipo del baño" />
             </SelectTrigger>
             <SelectContent>
-              {Array.from({ length: 10 }, (_, i) => (
+              {Array.from({ length: 3 }, (_, i) => (
                 <SelectItem key={i + 1} value={(i + 1).toString()}>
                   {i + 1}
                 </SelectItem>
@@ -151,10 +151,10 @@ const SubmitButton = () => {
           Procesando...
         </>
       ) : (
-        "Reservar"
+        "Buscar"
       )}
     </Button>
   );
 };
 
-export default ReservationWidget;
+export default WidgetSearchReservation;

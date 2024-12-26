@@ -1,3 +1,4 @@
+import CardBath from "@/components/ui/CardBath";
 import Container from "@/components/ui/Container";
 import Hero from "@/components/ui/Hero";
 
@@ -7,7 +8,12 @@ const Page = () => {
       <Hero type="Banos"></Hero>
       <section>
         <Container>
-          <div></div>
+          <div className="flex flex-col gap-10">
+            <CardBath></CardBath>
+            <CardBath></CardBath>
+            <CardBath></CardBath>
+            <CardBath></CardBath>
+          </div>
         </Container>
       </section>
     </div>

@@ -39,3 +39,39 @@ export async function createReservation(
     };
   }
 }
+
+export async function searchReservation(
+  formData: FormData
+): Promise<FormState> {
+  try {
+    // Simulate a delay to show loading state
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    const date = new Date(formData.get("date") as string);
+    const time = formData.get("time") as string;
+    const type = formData.get("type") as string;
+
+    if (isNaN(date.getTime())) {
+      return {
+        success: false,
+        message: "Fecha inválida",
+      };
+    }
+
+    console.log("Buscando:", {
+      date,
+      time,
+      type,
+    });
+
+    return {
+      success: true,
+      message: "Búsqueda exitosa",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: `${error} Error al buscar`,
+    };
+  }
+}

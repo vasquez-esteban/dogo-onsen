@@ -1,7 +1,7 @@
 import CardLinks from "@/components/ui/CardLinks";
 import Container from "@/components/ui/Container";
 import Hero from "@/components/ui/Hero";
-import ReservationWidget from "@/components/ui/ReservationWidget";
+import WidgetSearchBano from "@/components/ui/WidgetSearchBano";
 
 export default function Home() {
   return (
@@ -9,7 +9,7 @@ export default function Home() {
       <Hero type="Landing" />
       <section className="bg-primary">
         <Container>
-          <ReservationWidget></ReservationWidget>
+          <WidgetSearchBano></WidgetSearchBano>
         </Container>
       </section>
       <section className="bg-accent py-10">

@@ -107,7 +107,7 @@ body {
 
 @layer components {
   .primary-btn {
-    @apply flex h-14 w-40 items-center justify-center rounded-lg bg-primarybtn px-4 py-2;
+    @apply flex h-14 w-40 items-center justify-center rounded-lg bg-primarybtn px-4 py-2 font-bold text-white;
   }
 
   .primary-btn-xl {

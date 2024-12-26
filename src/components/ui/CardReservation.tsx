@@ -2,8 +2,8 @@ import jabones from "@/assets/producto1.webp";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 
-const CardProduct = () => {
-  const admin = true;
+const CardReservation = () => {
+  const espiritu = "rojo";
 
   return (
     <div className="w-70 sm:w-auto">
@@ -12,18 +12,14 @@ const CardProduct = () => {
           <Image src={jabones} alt="Imagen de jabones"></Image>
         </CardHeader>
         <CardContent>
-          <CardTitle>Jabones</CardTitle>
-          <p>Disfruta de nuestros aromáticos jabones</p>
-          <p>
-            <span className="text-2xl font-bold">15000</span>/persona
-          </p>
-          {admin && (
-            <button className="primary-btn mt-10 h-10 w-full">Editar</button>
-          )}
+          <CardTitle>Baño tradicional</CardTitle>
+          <p>Reservado por: Espíritu {espiritu}</p>
+          <p>3 mayo 2025</p>
+          <p>Incluye Jabones</p>
         </CardContent>
       </Card>
     </div>
   );
 };
 
-export default CardProduct;
+export default CardReservation;
