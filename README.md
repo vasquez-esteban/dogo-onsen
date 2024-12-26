@@ -65,6 +65,13 @@ El proceso de Elicitación está en el documento Requisitos.docx. Incluye link a
 
 [Link Dogo Onsen](https://dogo-onsen.vercel.app/)
 
+_Rutas que no son navegables:_
+
+- [Admin Editar Inventario](https://dogo-onsen.vercel.app/admin/editar-articulo)
+- [Admin Editar Baños](https://dogo-onsen.vercel.app/admin/editar-bano)
+- [Admin Buscar Reservas](https://dogo-onsen.vercel.app/admin/reserva)
+- [Cliente Hacer Reserva](https://dogo-onsen.vercel.app/reserva)
+
 ### Drive
 
 [Link de Drive](https://drive.google.com/drive/folders/1cESwxwmal_bX_WRkxD5H4oVLPwAX0utH?usp=drive_link)
