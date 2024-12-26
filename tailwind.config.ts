@@ -11,7 +11,7 @@ export default {
     extend: {
       fontFamily: {
         inknut: ["var(--font-inknut)"],
-        poppins: ["var(--font-poppins)"],
+        inter: ["var(--font-inter)"],
       },
       colors: {
         background: "hsl(var(--background))",
@@ -43,6 +43,18 @@ export default {
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
+        },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+        },
+        primarybtn: {
+          DEFAULT: "hsl(var(--primary-btn))",
+        },
+        primarylight: {
+          DEFAULT: "hsl(var(--primary-light))",
+        },
+        displaymuted: {
+          DEFAULT: "hsl(var(--display-muted))",
         },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

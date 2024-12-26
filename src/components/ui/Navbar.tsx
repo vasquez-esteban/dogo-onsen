@@ -2,44 +2,39 @@ import navlogo from "@/assets/navlogo.webp";
 import Image from "next/image";
 import Link from "next/link";
 
-const leftNavLinks = [
-  { href: "/", label: "Home" },
+const navLinks = [
   { href: "/banos", label: "Baños" },
-];
-
-const rightNavLinks = [
   { href: "/articulos", label: "Artículos" },
   { href: "/guia", label: "Guía" },
 ];
 
 const Navbar = () => {
   return (
-    <nav className="flex items-center justify-between rounded-lg border p-4">
-      <ul className="flex items-center space-x-6">
-        {leftNavLinks.map((link) => (
-          <li key={link.href}>
-            <Link href={link.href} className="hover:text-blue-500">
-              {link.label}
-            </Link>
-          </li>
-        ))}
-      </ul>
-      <div className="flex items-center justify-center">
-        <Link href="/" className="flex size-6 items-center justify-center">
-          <Image src={navlogo} alt="Company logo"></Image>
-        </Link>
-      </div>
-      <ul className="flex items-center space-x-6 font-medium">
-        {rightNavLinks.map((link) => (
-          <li key={link.href}>
-            <Link href={link.href} className="hover:text-blue-500">
-              {link.label}
-            </Link>
-          </li>
-        ))}
-        <li>
+    <div className="flex items-center justify-center">
+      <nav className="fixed top-0 z-50 flex w-full max-w-[1200px] items-center justify-between p-4">
+        <div className="flex size-12 items-center justify-center rounded-md bg-primarylight">
+          <Link
+            href="/"
+            className="flex size-full items-center justify-center border-red-300"
+          >
+            <Image src={navlogo} className="h-8 w-6" alt="Company logo"></Image>
+          </Link>
+        </div>
+        <ul className="mx-4 flex h-12 w-full items-center justify-center space-x-[4vw] rounded-md bg-primarylight">
+          {navLinks.map((link) => (
+            <li key={link.href}>
+              <Link
+                href={link.href}
+                className="font-bold hover:text-primarybtn"
+              >
+                {link.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+        <div className="flex size-12 items-center justify-center rounded-md bg-primarylight">
           <Link href="/signup">
-            <div className="flex size-4 cursor-pointer items-center justify-center">
+            <div className="flex cursor-pointer items-center justify-center">
               <div>
                 <svg
                   width="40"
@@ -66,9 +61,9 @@ const Navbar = () => {
               </div>
             </div>
           </Link>
-        </li>
-      </ul>
-    </nav>
+        </div>
+      </nav>
+    </div>
   );
 };
 

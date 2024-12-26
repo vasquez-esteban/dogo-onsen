@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 
 const AuthLayout = ({ children }: { children: ReactNode }) => {
   return (
-    <div className="flex w-screen items-center justify-center">
+    <div className="my-20 flex w-screen items-center justify-center">
       <div className="mx-auto w-full max-w-[400px]">
         <div className="flex flex-col gap-6 px-5">
           <Image

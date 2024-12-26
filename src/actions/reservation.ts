@@ -2,13 +2,6 @@
 
 import { FormState } from "@/app/(routes)/reserva/definitions";
 
-export type ReservationData = {
-  date: Date;
-  time: string;
-  spirits: string;
-  includeSpecialSoaps: boolean;
-};
-
 export async function createReservation(
   formData: FormData
 ): Promise<FormState> {

@@ -1,4 +1,4 @@
-import { Inknut_Antiqua, Poppins } from "next/font/google";
+import { Inknut_Antiqua, Inter } from "next/font/google";
 
 const inknut = Inknut_Antiqua({
   weight: ["400", "700"],
@@ -7,11 +7,11 @@ const inknut = Inknut_Antiqua({
   variable: "--font-inknut",
 });
 
-const poppins = Poppins({
+const inter = Inter({
   weight: ["400", "700"],
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-poppins",
+  variable: "--font-inter",
 });
 
-export { inknut, poppins };
+export { inknut, inter };

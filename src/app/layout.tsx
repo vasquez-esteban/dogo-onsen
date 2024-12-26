@@ -1,4 +1,4 @@
-import { inknut, poppins } from "@/styles/fonts";
+import { inknut, inter } from "@/styles/fonts";
 import type { Metadata } from "next";
 import "../styles/globals.css";
 import MainLayout from "./layouts/MainLayout";
@@ -16,7 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${poppins.variable} ${inknut.variable} antialiased`}>
+      <body className={`${inter.variable} ${inknut.variable} antialiased`}>
         <LenisScrollProvider>
           <MainLayout>{children}</MainLayout>
         </LenisScrollProvider>
