@@ -14,31 +14,19 @@ export function FormSignup() {
     <form action={action}>
       <div className="flex flex-col gap-6">
         <div className="grid gap-2">
-          <Label htmlFor="name">Nombre</Label>
+          <Label htmlFor="email">Correo</Label>
           <Input
-            id="name"
-            name="name"
-            type="text"
-            placeholder="Nombre"
+            id="email"
+            name="email"
+            type="email"
+            placeholder="Correo Electrónico"
             required
           />
-          {state?.errors?.name && (
-            <p className="text-sm text-red-500">{state.errors.name}</p>
+          {state?.errors?.email && (
+            <p className="text-sm text-red-500">{state.errors.email}</p>
           )}
         </div>
-        <div className="grid gap-2">
-          <Label htmlFor="user">Usuario</Label>
-          <Input
-            id="user"
-            name="user"
-            type="text"
-            placeholder="Usuario"
-            required
-          />
-          {state?.errors?.user && (
-            <p className="text-sm text-red-500">{state.errors.user}</p>
-          )}
-        </div>
+
         <div className="grid gap-2">
           <div className="flex items-center">
             <Label htmlFor="password">Contraseña</Label>

@@ -14,16 +14,16 @@ export function FormSignin() {
     <form action={action}>
       <div className="flex flex-col gap-6">
         <div className="grid gap-2">
-          <Label htmlFor="user">Usuario</Label>
+          <Label htmlFor="email">Correo</Label>
           <Input
-            id="user"
-            name="user"
-            type="text"
-            placeholder="Usuario"
+            id="email"
+            name="email"
+            type="email"
+            placeholder="Correo"
             required
           />
-          {state?.errors?.user && (
-            <p className="text-sm text-red-500">{state.errors.user}</p>
+          {state?.errors?.email && (
+            <p className="text-sm text-red-500">{state.errors.email}</p>
           )}
         </div>
         <div className="grid gap-2">

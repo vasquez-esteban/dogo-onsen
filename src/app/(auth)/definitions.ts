@@ -1,13 +1,9 @@
 import { z } from "zod";
 
 export const SignupFormSchema = z.object({
-  name: z
+  email: z
     .string()
-    .min(2, { message: "El nombre debe contener al menos 2 caracteres" })
-    .trim(),
-  user: z
-    .string()
-    .min(2, { message: "Tu usuario debe contener al menos 2 caracteres" })
+    .email({ message: "Por favor ingrese un correo electrónico válido" })
     .trim(),
   password: z
     .string()
@@ -21,15 +17,14 @@ export const SignupFormSchema = z.object({
 });
 
 export const SigninFormSchema = z.object({
-  user: z.string(),
+  email: z.string().email(),
   password: z.string().min(1, { message: "La contraseña no debe estar vacía" }),
 });
 
 export type FormState =
   | {
       errors?: {
-        name?: string[];
-        user?: string[];
+        email?: string[];
         password?: string[];
       };
       success?: boolean;
