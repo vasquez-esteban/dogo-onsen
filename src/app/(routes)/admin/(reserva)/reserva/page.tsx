@@ -6,10 +6,10 @@ import WidgetSearchReservation from "@/components/ui/WidgetSearchReservation";
 const Page = () => {
   return (
     <div>
-      <Hero type="Reservas"></Hero>
-
+      <Hero type="adminReservas"></Hero>
       <section>
         <Container>
+          <div className="text-6xl text-red-500">Listar Reservas Admin</div>
           <WidgetSearchReservation></WidgetSearchReservation>
           <div className="flex flex-wrap gap-2">
             <CardReservation></CardReservation>

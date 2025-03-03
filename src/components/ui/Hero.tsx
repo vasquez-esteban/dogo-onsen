@@ -23,17 +23,29 @@ const pics = {
     alt: "Imagen de espíritu en baño",
     title: "Relájate en nuestros baños",
   },
-  reservas: {
-    id: "Reservas",
-    src: heroBano,
-    alt: "Imagen de espíritu en baño",
-    title: "Gestiona las reservas de baños",
-  },
   articles: {
     id: "Articulos",
     src: heroArticles,
     alt: "Articles Image",
     title: "Conoce nuestros artículos de amenidad",
+  },
+  adminBano: {
+    id: "adminBano",
+    src: heroBano,
+    alt: "Imagen de espíritu en baño",
+    title: "Gestiona los baños",
+  },
+  adminArticles: {
+    id: "adminArticles",
+    src: heroArticles,
+    alt: "Imagen de espíritu en baño",
+    title: "Gestiona los artículos",
+  },
+  adminReservas: {
+    id: "adminReservas",
+    src: heroBano,
+    alt: "Imagen de espíritu en baño",
+    title: "Gestiona las reservas de baños",
   },
 };
 

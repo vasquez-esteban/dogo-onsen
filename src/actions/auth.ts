@@ -75,7 +75,32 @@ export async function signin(
   redirect("/");
 }
 
-export async function signout() {
-  // deleteSession()
-  redirect("/signin");
+export async function getUserRole(): Promise<string | null> {
+  const supabase = await createClient();
+
+  // Get the authenticated user
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    console.log("no datos");
+    console.log(userError);
+    return null;
+  }
+
+  const { data: userData, error } = await supabase
+    .from("roles")
+    .select("rol")
+    .eq("id_usuario", user.id)
+    .single();
+
+  if (error || !userData) {
+    console.log("no datos");
+    console.log(error);
+    return null;
+  }
+
+  return userData.rol;
 }
