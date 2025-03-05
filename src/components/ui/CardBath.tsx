@@ -12,9 +12,19 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import Image from "next/image";
 import { useState } from "react";
+import { useAuth } from "./context/AuthProvider";
 
 export default function CardBath() {
   const [includeSpecialSoaps, setIncludeSpecialSoaps] = useState(false);
+  const { role, isAuthenticated, isLoading } = useAuth();
+  const isClientOrAdmin = isAuthenticated && (role === "Cliente" || role === "Admin");
+
+  if (isLoading) {
+    return <div className="flex justify-center p-4">Cargando...</div>; // Loader temporal
+  }
+
+  console.log("Auth status:", { isAuthenticated, role, isLoading });
+  console.log("Mostrar botones:", isAuthenticated, role, isClientOrAdmin);
 
   return (
     <Card className="overflow-hidden bg-white">
@@ -42,14 +52,16 @@ export default function CardBath() {
                 <h3 className="text-sm font-medium">Capacidad</h3>
                 <p className="text-sm text-muted-foreground">4 Espíritus</p>
               </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="soaps"
-                  checked={includeSpecialSoaps}
-                  onCheckedChange={(checked) =>
-                    setIncludeSpecialSoaps(checked as boolean)
-                  }
-                />
+              {/* Checkbox solo visible para Cliente o Admin */}
+              {isClientOrAdmin && (
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="soaps"
+                    checked={includeSpecialSoaps}
+                    onCheckedChange={(checked) =>
+                      setIncludeSpecialSoaps(checked as boolean)
+                    }
+                  />
                 <label
                   htmlFor="soaps"
                   className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -57,6 +69,7 @@ export default function CardBath() {
                   Incluir Jabones Especiales ($15.000/Persona)
                 </label>
               </div>
+              )}
             </div>
           </CardContent>
           <CardFooter className="mt-auto flex items-center justify-between">
@@ -64,9 +77,12 @@ export default function CardBath() {
               <span className="text-2xl font-bold">$105.000</span>
               <span className="text-xs text-muted-foreground">/hora</span>
             </div>
-            <Button asChild className="bg-primarybtn">
-              <a href="#">Reservar</a>
-            </Button>
+            {/* 🔹 Ocultar completamente el botón de reservar si es Guest */}
+            {isClientOrAdmin && (
+              <Button asChild className="bg-primarybtn">
+                <a href="#">Reservar</a>
+              </Button>
+            )}
           </CardFooter>
         </div>
       </div>

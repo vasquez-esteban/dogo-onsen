@@ -5,10 +5,10 @@ import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export function SignOutButton() {
+  const supabase = createClient();
   const router = useRouter();
 
   const handleSignOut = async () => {
-    const supabase = createClient();
     await supabase.auth.signOut();
     router.refresh();
   };

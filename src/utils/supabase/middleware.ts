@@ -2,26 +2,16 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function updateSession(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({
-    request,
-  });
+  const supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value)
-          );
-          supabaseResponse = NextResponse.next({
-            request,
-          });
-          cookiesToSet.forEach(({ name, value, options }) =>
+        getAll: () => request.cookies.getAll(),
+        setAll: (cookiesToSet) => {
+          cookiesToSet.forEach(({ name, value, options }) => 
             supabaseResponse.cookies.set(name, value, options)
           );
         },
@@ -29,56 +19,29 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  // Do not run code between createServerClient and
-  // supabase.auth.getUser(). A simple mistake could make it very hard to debug
-  // issues with users being randomly logged out.
+  const { data: { user } } = await supabase.auth.getUser();
+  const pathname = request.nextUrl.pathname;
 
-  // IMPORTANT: DO NOT REMOVE auth.getUser()
+  // Definir rutas públicas
+  const publicRoutes = ["/signin", "/signup", "/banos", "/articulos", "/guia", "/auth"];
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (
-    !user &&
-    !request.nextUrl.pathname.startsWith("/signin") &&
-    !request.nextUrl.pathname.startsWith("/signup") &&
-    !request.nextUrl.pathname.startsWith("/auth")
-  ) {
-    // no user, potentially respond by redirecting the user to the login page
-    const url = request.nextUrl.clone();
-    url.pathname = "/signin";
-    return NextResponse.redirect(url);
+  if (!user && !publicRoutes.some((route) => pathname.startsWith(route))) {
+    return NextResponse.redirect(new URL("/signin", request.url));
   }
 
-  // Protect "/admin" routes
-  if (request.nextUrl.pathname.startsWith("/admin") && user) {
-    const { data: roleData, error } = await supabase
-      .from("roles")
-      .select("rol")
-      .eq("id_usuario", user.id)
-      .single();
+  if (!user) return supabaseResponse;
 
-    // If user is not an Admin, redirect to home
-    if (error || !roleData || roleData.rol !== "Admin") {
-      const url = request.nextUrl.clone();
-      url.pathname = "/";
-      return NextResponse.redirect(url);
-    }
+  const { data: roleData } = await supabase
+    .from("roles")
+    .select("rol")
+    .eq("id_usuario", user.id)
+    .single();
+
+  const userRole = roleData?.rol || "Guest";
+
+  if (pathname.startsWith("/admin") && userRole !== "Admin") {
+    return NextResponse.redirect(new URL("/", request.url));
   }
-
-  // IMPORTANT: You *must* return the supabaseResponse object as it is.
-  // If you're creating a new response object with NextResponse.next() make sure to:
-  // 1. Pass the request in it, like so:
-  //    const myNewResponse = NextResponse.next({ request })
-  // 2. Copy over the cookies, like so:
-  //    myNewResponse.cookies.setAll(supabaseResponse.cookies.getAll())
-  // 3. Change the myNewResponse object to fit your needs, but avoid changing
-  //    the cookies!
-  // 4. Finally:
-  //    return myNewResponse
-  // If this is not done, you may be causing the browser and server to go out
-  // of sync and terminate the user's session prematurely!
 
   return supabaseResponse;
 }

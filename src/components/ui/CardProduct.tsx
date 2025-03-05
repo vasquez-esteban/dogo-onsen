@@ -1,9 +1,13 @@
+"use client";
+
 import jabones from "@/assets/producto1.webp";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
+import { useAuth } from "./context/AuthProvider";
 
 const CardProduct = () => {
-  const admin = true;
+  const { role, isLoading } = useAuth();
+  const isAdmin = role === "Admin";
 
   return (
     <div className="w-70 sm:w-auto">
@@ -17,7 +21,8 @@ const CardProduct = () => {
           <p>
             <span className="text-2xl font-bold">15000</span>/persona
           </p>
-          {admin && (
+          {/*Ocultar el botón "Editar" si No es Admin */}
+          {!isLoading && isAdmin &&  (
             <button className="primary-btn mt-10 h-10 w-full">Editar</button>
           )}
         </CardContent>

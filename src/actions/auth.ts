@@ -28,19 +28,26 @@ export async function signup(
       errors: validateFields.error.flatten().fieldErrors,
     };
   }
-
-  // 4. Crear el nuevo usuario
-  const { error } = await supabase.auth.signUp(validateFields.data);
+  // Intentar registrar al usuario
+  const { error: authError} = await supabase.auth.signUp(validateFields.data);
 
   const errorMessage = { message: "Error al Logear" };
-
-  if (error) {
+  
+  if (authError) {
+    console.log(authError);
     return errorMessage;
   }
+  
 
-  revalidatePath("/", "layout");
-  redirect("/");
+  // Registro exitoso (requiere confirmación)
+  console.log('Registro exitoso.');
+  return {
+    ...state,
+    errors: {},
+    message: "¡Registro exitoso!. Diríjase a su correo para realizar la confirmación.",
+  };
 }
+
 
 export async function signin(
   state: FormState,
@@ -63,7 +70,9 @@ export async function signin(
   }
 
   // 2. Hacer Login y retornar Errores de credenciales
-  const { error } = await supabase.auth.signInWithPassword(validateFields.data);
+  const { data,  error } = await supabase.auth.signInWithPassword(validateFields.data);
+
+  console.log("Respuesta de Supabase:", { data, error }); 
 
   const errorMessage = { message: "Credenciales Inválidas" };
 
@@ -71,25 +80,27 @@ export async function signin(
     return errorMessage;
   }
 
+  
+  
   revalidatePath("/", "layout");
   redirect("/");
 }
 
-export async function getUserRole(): Promise<string | null> {
+export async function getUserRole(): Promise<{ role: string }> {
   const supabase = await createClient();
 
-  // Get the authenticated user
+  // Obtener el usuario autenticado
   const {
     data: { user },
     error: userError,
   } = await supabase.auth.getUser();
 
   if (userError || !user) {
-    console.log("no datos");
-    console.log(userError);
-    return null;
+    console.log("No autenticado", userError);
+    return { role: "Guest"}; // Si no está autenticado, se considera "guest"
   }
 
+  // Obtener el rol desde la tabla "roles"
   const { data: userData, error } = await supabase
     .from("roles")
     .select("rol")
@@ -97,10 +108,9 @@ export async function getUserRole(): Promise<string | null> {
     .single();
 
   if (error || !userData) {
-    console.log("no datos");
-    console.log(error);
-    return null;
+    console.log("Error obteniendo rol", error);
+    return { role: "Cliente"}; // Si no se encuentra el rol, se asume como usuario normal
   }
 
-  return userData.rol;
+  return { role: userData.rol };
 }
