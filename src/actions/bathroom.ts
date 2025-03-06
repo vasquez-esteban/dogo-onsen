@@ -1,13 +1,16 @@
 "use server";
 
 import { FormState } from "@/app/(routes)/reserva/definitions";
+import { createClient } from "@/utils/supabase/server";
+import { revalidatePath } from "next/cache";
 
 interface UpdateBathData {
-  name: string;
-  description: string;
-  capacity: string;
-  spiritType: string;
-  price: number;
+  id_baño: number;
+  nombre: string;
+  descripcion: string;
+  capacidad: number;
+  encargado_limpieza: string;
+  precio: number;
   soapCount: number;
   towelCount: number;
 }
@@ -19,7 +22,7 @@ export async function searchBano(formData: FormData): Promise<FormState> {
 
     const date = new Date(formData.get("date") as string);
     const time = formData.get("time") as string;
-    const spirits = formData.get("spirits") as string;
+    const encargado_limpieza = formData.get("spirits") as string;
 
     if (isNaN(date.getTime())) {
       return {
@@ -28,10 +31,10 @@ export async function searchBano(formData: FormData): Promise<FormState> {
       };
     }
 
-    console.log("Buscando:", {
+    console.log("Buscando baño con:", {
       date,
       time,
-      spirits,
+      encargado_limpieza,
     });
 
     return {
@@ -51,22 +54,49 @@ export async function updateBath(
   formData: FormData
 ): Promise<{ message: string }> {
   // Simulate a delay
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  try {
+    //await new Promise((resolve) => setTimeout(resolve, 1000));
+    const supabase = await createClient();
 
-  const data: UpdateBathData = {
-    name: formData.get("name") as string,
-    description: formData.get("description") as string,
-    capacity: formData.get("capacity") as string,
-    spiritType: formData.get("spiritType") as string,
-    price: Number(formData.get("price")),
-    soapCount: Number(formData.get("soapCount")),
-    towelCount: Number(formData.get("towelCount")),
-  };
+    const data: UpdateBathData = {
+      id_baño: Number(formData.get("id_baño")),
+      nombre: formData.get("nombre") as string,
+      descripcion: formData.get("descripcion") as string,
+      capacidad: Number(formData.get("capacidad")),
+      encargado_limpieza: formData.get("encargado_limpieza") as string, // "rojo" | "azul" | "verde"
+      precio: Number(formData.get("precio")),
+      soapCount: Number(formData.get("soapCount")),
+      towelCount: Number(formData.get("towelCount")),
+    };
 
-  // Log the data (replace with your actual update logic)
-  console.log("Updating bath with data:", data);
+    // Validar que el ID es un número válido
+    if (isNaN(data.id_baño)) {
+      return { message: "ID de baño inválido" };
+    }
 
-  return {
-    message: "Baño actualizado exitosamente",
-  };
+    // Llamar a la función RPC en Supabase
+    const { data: result, error } = await supabase.rpc("actualizar_baño", {
+      p_id_bano: data.id_baño,
+      p_nombre: data.nombre,
+      p_descripcion: data.descripcion,
+      p_capacidad: data.capacidad,
+      p_encargado_limpieza: data.encargado_limpieza,
+      p_precio: data.precio,
+      p_jabones: data.soapCount,
+      p_toallas: data.towelCount,
+    });
+
+    if (error) {
+      console.error("Error al actualizar el baño:", error);
+      return { message: error.message || "Error al actualizar el baño" };
+    }
+
+    // Revalidar la ruta de la página de productos
+    revalidatePath(`/admin/editar-bano/${data.id_baño}`);
+
+    return { message: result || "Baño actualizado exitosamente" };
+  } catch (error) {
+    console.error("Error general al actualizar:", error);
+    return { message: "Ocurrió un error inesperado" };
+  }
 }

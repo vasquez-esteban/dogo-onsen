@@ -15,7 +15,18 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useActionState } from "react";
 
-export default function EditBathForm() {
+interface Bano {
+  id_baño: number;
+  nombre: string;
+  descripcion: string;
+  capacidad: number;
+  encargado_limpieza: string;
+  precio: number;
+  cantidad_jabones: number;
+  cantidad_toallas: number;
+}
+
+export default function FormEditarBano({ bano }: { bano: Bano }) {
   const [state, action] = useActionState(updateBath, undefined);
 
   return (
@@ -25,29 +36,32 @@ export default function EditBathForm() {
       </CardHeader>
       <CardContent>
         <form action={action} className="space-y-4">
+          {/* ID oculto para identificar el baño */}
+          <input type="hidden" name="id_baño" value={bano.id_baño} />
+
           <div className="space-y-2">
-            <Label htmlFor="name">Nombre</Label>
+            <Label htmlFor="nombre">Nombre</Label>
             <Input
-              id="name"
-              name="name"
-              placeholder="Nombre del baño"
+              id="nombre"
+              name="nombre"
+              defaultValue={bano.nombre}
               required
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Descripción</Label>
+            <Label htmlFor="descripcion">Descripción</Label>
             <Textarea
-              id="description"
-              name="description"
-              placeholder="Lorem ipsum dolor..."
+              id="descripcion"
+              name="descripcion"
+              defaultValue={bano.descripcion}
               required
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="capacity">Capacidad</Label>
-            <Select name="capacity" defaultValue="1">
+            <Label htmlFor="capacidad">Capacidad</Label>
+            <Select name="capacidad" defaultValue={String(bano.capacidad)}>
               <SelectTrigger>
                 <SelectValue placeholder="Seleccionar capacidad" />
               </SelectTrigger>
@@ -61,8 +75,11 @@ export default function EditBathForm() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="spiritType">Encargado de limpieza</Label>
-            <Select name="spiritType" defaultValue="rojo">
+            <Label htmlFor="encargado_limpieza">Encargado de limpieza</Label>
+            <Select
+              name="encargado_limpieza"
+              defaultValue={bano.encargado_limpieza}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Seleccionar espíritu" />
               </SelectTrigger>
@@ -75,14 +92,14 @@ export default function EditBathForm() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="price">Precio</Label>
+            <Label htmlFor="precio">Precio</Label>
             <Input
-              id="price"
-              name="price"
+              id="precio"
+              name="precio"
               type="number"
               min="0"
               step="1000"
-              placeholder="80000"
+              defaultValue={bano.precio}
               required
             />
           </div>
@@ -94,7 +111,7 @@ export default function EditBathForm() {
               name="soapCount"
               type="number"
               min="0"
-              placeholder="3"
+              defaultValue={bano.cantidad_jabones}
               required
             />
           </div>
@@ -106,13 +123,13 @@ export default function EditBathForm() {
               name="towelCount"
               type="number"
               min="0"
-              placeholder="4"
+              defaultValue={bano.cantidad_toallas}
               required
             />
           </div>
 
           <Button type="submit" className="w-full bg-gray-900">
-            Editar
+            Guardar cambios
           </Button>
 
           {state?.message && (

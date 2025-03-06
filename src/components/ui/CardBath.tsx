@@ -13,7 +13,18 @@ import { Checkbox } from "@/components/ui/checkbox";
 import Image from "next/image";
 import { useState } from "react";
 
-export default function CardBath() {
+interface Bano {
+  id_baño: number;
+  nombre: string;
+  descripcion: string;
+  capacidad: number;
+  encargado_limpieza: string;
+  precio: number;
+  cantidad_jabones: number;
+  cantidad_toallas: number;
+}
+
+export default function CardBath({ bano }: { bano: Bano }) {
   const [includeSpecialSoaps, setIncludeSpecialSoaps] = useState(false);
 
   return (
@@ -30,28 +41,30 @@ export default function CardBath() {
         </div>
         <div className="flex flex-col md:w-3/4">
           <CardHeader>
-            <CardTitle className="text-2xl font-bold">Baño Curativo</CardTitle>
+            <CardTitle className="text-2xl font-bold">{bano.nombre}</CardTitle>
             <p className="text-sm text-muted-foreground">
-              Indulge in a Memorable One-Time Romantic Dinner for Two (Incluye 3
-              jabones y 2 toallas)
+              {bano.descripcion} Incluye: {bano.cantidad_toallas} toallas y{" "}
+              {bano.cantidad_jabones} jabones
             </p>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div>
                 <h3 className="text-sm font-medium">Capacidad</h3>
-                <p className="text-sm text-muted-foreground">4 Espíritus</p>
+                <p className="text-sm text-muted-foreground">
+                  {bano.capacidad} Espíritus
+                </p>
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox
-                  id="soaps"
+                  id={`soaps-${bano.id_baño}`}
                   checked={includeSpecialSoaps}
                   onCheckedChange={(checked) =>
                     setIncludeSpecialSoaps(checked as boolean)
                   }
                 />
                 <label
-                  htmlFor="soaps"
+                  htmlFor={`soaps-${bano.id_baño}`}
                   className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
                   Incluir Jabones Especiales ($15.000/Persona)
@@ -61,7 +74,7 @@ export default function CardBath() {
           </CardContent>
           <CardFooter className="mt-auto flex items-center justify-between">
             <div className="flex flex-col">
-              <span className="text-2xl font-bold">$105.000</span>
+              <span className="text-2xl font-bold">${bano.precio}</span>
               <span className="text-xs text-muted-foreground">/hora</span>
             </div>
             <Button asChild className="bg-primarybtn">
