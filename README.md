@@ -56,8 +56,8 @@ El proceso de Elicitación está en el documento Requisitos.docx. Incluye link a
 ### Back
 
 - Integrar Backend con Server Actions:
-  - Autenticación
-  - Base de datos
+  - Autenticación.
+  - Base de datos.
 
 # RECURSOS
 
