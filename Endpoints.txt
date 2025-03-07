@@ -3,6 +3,9 @@ Desde la base de datos se tienen los siguientes endpoints:
 
 
 cancelar, crear usuario, es admin, ver banos, ver reserva admin
+actualizar la cantidad de un producto, crear una reserva, actualizar un baño,
+alertar sobre un producto bajo, marcar mantenimiento de un baño
+ 
 --------------------------------------------------------------------------------------------------------------------------------
 
 Para CANCELAR RESERVA
@@ -195,3 +198,282 @@ BEGIN
     )
     AND b.estado = 'Disponible';  
 $$;
+
+--------------------------------------------------------------------------------------------------------------------------------
+Para actualizar la cantidad de un producto
+
+CREATE OR REPLACE FUNCTION actualizar_cantidad_producto(
+    p_id_producto INTEGER,
+    p_cantidad INTEGER
+) 
+RETURNS TEXT AS $$
+BEGIN
+    UPDATE public.producto
+    SET cantidad = cantidad + p_cantidad
+    WHERE id_producto = p_id_producto;
+    
+    RETURN 'Inventario actualizado exitosamente.';
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+Para crear una reserva
+
+CREATE OR REPLACE FUNCTION crear_reserva(
+    p_id_bano INTEGER,
+    p_fecha DATE,
+    p_hora TIME,
+    p_cantidad_espiritu INTEGER,
+    p_jabon_especial BOOLEAN
+) 
+RETURNS TEXT AS $$
+DECLARE
+    id_usuario_actual UUID;
+    bano_existente INT;
+    reserva_existente INT;
+    jabones_necesarios INT;
+    toallas_necesarias INT;
+    stock_jabones INT;
+    stock_toallas INT;
+BEGIN
+    -- Obtener el ID del usuario autenticado
+    SELECT auth.uid() INTO id_usuario_actual;
+
+    -- Verificar si el usuario existe
+    IF id_usuario_actual IS NULL THEN
+        RETURN 'Error: No se encontró el usuario autenticado.';
+    END IF;
+
+    -- Verificar si el baño existe
+    SELECT COUNT(*) INTO bano_existente FROM baño WHERE id_baño = p_id_bano;
+    IF bano_existente = 0 THEN
+        RETURN 'Error: El baño no existe.';
+    END IF;
+
+    -- Verificar si la fecha y hora están disponibles
+    SELECT COUNT(*) INTO reserva_existente 
+    FROM reserva 
+    WHERE id_baño = p_id_bano AND fecha = p_fecha AND hora = p_hora;
+
+    IF reserva_existente > 0 THEN
+        RETURN 'Error: La fecha y hora ya están reservadas.';
+    END IF;
+
+    -- Obtener los jabones y toallas necesarias del baño (de baño_producto)
+    SELECT cantidad INTO jabones_necesarios 
+    FROM baño_producto 
+    WHERE id_baño = p_id_bano AND id_producto = 2;  -- id_producto = 2 para jabones
+
+    SELECT cantidad INTO toallas_necesarias 
+    FROM baño_producto 
+    WHERE id_baño = p_id_bano AND id_producto = 3;  -- id_producto = 3 para toallas
+
+    -- Verificar si hay suficientes jabones y toallas en el inventario (en producto)
+    SELECT cantidad INTO stock_jabones 
+    FROM producto 
+    WHERE id_producto = 2;  -- id_producto = 2 para jabones
+
+    SELECT cantidad INTO stock_toallas 
+    FROM producto 
+    WHERE id_producto = 3;  -- id_producto = 3 para toallas
+
+    -- Verificar si hay suficiente stock de jabones y toallas en el inventario
+    IF stock_jabones < jabones_necesarios THEN
+        RETURN 'Error: No hay suficientes jabones en el inventario.';
+    END IF;
+
+    IF stock_toallas < toallas_necesarias THEN
+        RETURN 'Error: No hay suficientes toallas en el inventario.';
+    END IF;
+
+    -- Restar la cantidad de jabones y toallas en la tabla producto
+    UPDATE producto 
+    SET cantidad = cantidad - jabones_necesarios 
+    WHERE id_producto = 2;  -- Restar los jabones
+
+    UPDATE producto 
+    SET cantidad = cantidad - toallas_necesarias 
+    WHERE id_producto = 3;  -- Restar las toallas
+
+    -- Si jabon_especial es TRUE, verificar stock y actualizar el producto con id_producto = 1
+    IF p_jabon_especial THEN
+        SELECT cantidad INTO stock_jabones FROM producto WHERE id_producto = 1;
+        
+        IF stock_jabones IS NULL THEN
+            RETURN 'Error: No se encontró el producto de jabón especial.';
+        END IF;
+
+        IF stock_jabones < 1 THEN
+            RETURN 'Error: No hay suficiente jabón especial en stock.';
+        END IF;
+
+        -- Restar 1 al stock del jabón especial
+        UPDATE producto SET cantidad = cantidad - 1 WHERE id_producto = 1;
+    END IF;
+
+    -- Insertar la nueva reserva con el usuario autenticado
+    INSERT INTO reserva (id_usuario, id_baño, fecha, hora, cantidad_espiritu, jabon_especial)
+    VALUES (id_usuario_actual, p_id_bano, p_fecha, p_hora, p_cantidad_espiritu, p_jabon_especial);
+
+    RETURN 'Reserva creada exitosamente.';
+END;
+$$ LANGUAGE plpgsql;
+
+
+--------------------------------------------------------------------------------------------------------------------------------
+Para actualizar un baño
+
+CREATE OR REPLACE FUNCTION actualizar_baño(
+    p_id_bano INTEGER,
+    p_nombre TEXT,
+    p_descripcion TEXT,
+    p_capacidad INTEGER,
+    p_encargado_limpieza TEXT,
+    p_precio NUMERIC,
+    p_jabones INTEGER,
+    p_toallas INTEGER
+) 
+RETURNS TEXT AS $$
+DECLARE
+    usuario_rol TEXT;
+    id_usuario_actual UUID;
+    estado_bano TEXT;
+BEGIN
+    -- Obtener el ID del usuario autenticado
+    SELECT auth.uid() INTO id_usuario_actual;
+
+    -- Verificar el rol del usuario en la tabla "roles"
+    SELECT r.rol INTO usuario_rol 
+    FROM roles r 
+    WHERE r.id_usuario = id_usuario_actual;
+
+    -- Si el usuario no es Admin, denegar acceso
+    IF usuario_rol IS NULL OR usuario_rol <> 'Admin' THEN
+        RAISE EXCEPTION 'Acceso denegado: Solo los administradores pueden actualizar el baño.';
+    END IF;
+
+    -- Verificar el estado actual del baño
+    SELECT estado INTO estado_bano
+    FROM public.baño
+    WHERE id_baño = p_id_bano;
+
+    -- Si el estado es 'ocupado', denegar la actualización
+    IF estado_bano = 'Ocupado' THEN
+        RAISE EXCEPTION 'No se puede actualizar el baño: el baño está ocupado.';
+    END IF;
+
+    -- Actualizar la tabla baño
+    UPDATE public.baño
+    SET nombre             = p_nombre,
+        descripcion        = p_descripcion,
+        capacidad          = p_capacidad,
+        encargado_limpieza = p_encargado_limpieza,
+        precio             = p_precio
+    WHERE id_baño = p_id_bano;
+
+    -- Actualizar los jabones en baño_producto (id_producto = 2)
+    UPDATE public.baño_producto
+    SET cantidad = p_jabones
+    WHERE id_baño = p_id_bano
+      AND id_producto = 2;
+
+    -- Actualizar las toallas en baño_producto (id_producto = 3)
+    UPDATE public.baño_producto
+    SET cantidad = p_toallas
+    WHERE id_baño = p_id_bano
+      AND id_producto = 3;
+
+    RETURN 'Baño y productos actualizados exitosamente.';
+END;
+$$ LANGUAGE plpgsql;
+
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+Para alertar sobre un producto bajo
+
+
+CREATE OR REPLACE FUNCTION alerta_producto_bajo()
+RETURNS TABLE(nombre TEXT, cantidad INTEGER) AS $$
+DECLARE
+    usuario_rol TEXT;
+    id_usuario_actual UUID;
+    nombre_producto TEXT;
+    cantidad_producto INTEGER;
+BEGIN
+    -- Obtener el ID del usuario autenticado
+    SELECT auth.uid() INTO id_usuario_actual;
+
+    -- Verificar el rol del usuario en la tabla "roles"
+    SELECT r.rol INTO usuario_rol 
+    FROM roles r 
+    WHERE r.id_usuario = id_usuario_actual;
+
+    -- Si el usuario no es Admin, denegar acceso
+    IF usuario_rol IS NULL OR usuario_rol <> 'Admin' THEN
+        RAISE EXCEPTION 'Acceso denegado: Solo los administradores pueden ver los productos con cantidad baja.';
+    END IF;
+
+    -- Recorrer los productos con cantidad menor a 10
+    FOR nombre_producto, cantidad_producto IN
+        SELECT nombre, cantidad
+        FROM public.producto
+        WHERE cantidad < 10
+    LOOP
+        -- Generar una notificación
+        RAISE NOTICE 'Alerta: El producto "%" tiene solo % unidades disponibles.', nombre_producto, cantidad_producto;
+        
+        -- Devolver el producto con cantidad baja
+        RETURN QUERY SELECT nombre_producto, cantidad_producto;
+    END LOOP;
+    
+    -- Si no hay productos con cantidad baja, no devuelve nada
+    RETURN;
+END;
+$$ LANGUAGE plpgsql;
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+Para marcar mantenimiento de un baño
+
+
+CREATE OR REPLACE FUNCTION mantenimiento_baño(
+    id_bano_param INTEGER,
+    mantainance BOOLEAN
+) 
+RETURNS TEXT AS $$
+DECLARE
+    nuevo_estado TEXT;
+BEGIN
+    -- Determinar el nuevo estado según el valor de mantainance
+    IF mantainance THEN
+        nuevo_estado := 'Ocupado';
+    ELSE
+        nuevo_estado := 'Disponible';
+    END IF;
+
+    -- Actualizar el estado del baño en la base de datos
+    UPDATE public.baño
+    SET estado = nuevo_estado
+    WHERE id_baño = id_bano_param;
+
+    -- Verificar si se aplicó el cambio
+    IF NOT FOUND THEN
+        RETURN 'Error: No se encontró un baño con ese ID.';
+    END IF;
+
+    RETURN 'Estado del baño fue actualizado a ' || nuevo_estado;
+END;
+$$ LANGUAGE plpgsql;
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
