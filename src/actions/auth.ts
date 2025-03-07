@@ -34,19 +34,18 @@ export async function signup(
 
   const errorMessage = { message: "Error al Logear" };
 
-  
   if (authError) {
     console.log(authError);
     return errorMessage;
   }
-  
 
   // Registro exitoso (requiere confirmación)
-  console.log('Registro exitoso.');
+  console.log("Registro exitoso.");
   return {
     ...state,
     errors: {},
-    message: "¡Registro exitoso!. Diríjase a su correo para realizar la confirmación.",
+    message:
+      "¡Registro exitoso!. Diríjase a su correo para realizar la confirmación.",
   };
 }
 

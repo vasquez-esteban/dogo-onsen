@@ -1,5 +1,5 @@
-import heroArticles from "@/assets/articulosCardCliente.webp";
 import heroArticlesAdmin from "@/assets/articuloCard.webp";
+import heroArticles from "@/assets/articulosCardCliente.webp";
 import heroBano from "@/assets/banoCard.webp";
 import heroInfo from "@/assets/hero-info.webp";
 import heroLanding from "@/assets/hero-landing.webp";

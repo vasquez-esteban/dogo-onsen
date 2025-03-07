@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
+import { useEffect, useState } from "react";
 
 export function useUserRole() {
   const [role, setRole] = useState<string | null>(null);

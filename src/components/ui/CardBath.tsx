@@ -1,6 +1,5 @@
 "use client";
 
-
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,10 +8,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { getImage } from "@/utils/supabase/imageMaps";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { getImage } from "@/utils/supabase/imageMaps";
-
 
 interface Bano {
   id_baño: number;
