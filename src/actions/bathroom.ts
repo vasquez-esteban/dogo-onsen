@@ -13,6 +13,7 @@ interface UpdateBathData {
   precio: number;
   soapCount: number;
   towelCount: number;
+  maintenance: boolean;
 }
 
 export async function searchBano(formData: FormData): Promise<FormState> {
@@ -67,6 +68,8 @@ export async function updateBath(
       precio: Number(formData.get("precio")),
       soapCount: Number(formData.get("soapCount")),
       towelCount: Number(formData.get("towelCount")),
+      maintenance:
+        (formData.get("maintenance") as string) == "on" ? true : false,
     };
 
     // Validar que el ID es un número válido

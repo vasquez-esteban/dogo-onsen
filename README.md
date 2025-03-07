@@ -6,7 +6,7 @@ Para correr localmente usar `pnpm install` y `pnpm run dev`
 
 **Importante antes de hacer push**
 
-- Correr `pmpm run lint`. Si el resultado da errores, el push puede fallar.
+- Correr `pnpm run lint`. Si el resultado da errores, el push puede fallar.
 - Correr `pnpm run fmt`. Para formatear código y mantener consistencia.
 
 ## Dependencias principales
