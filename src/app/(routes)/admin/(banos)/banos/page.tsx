@@ -16,7 +16,6 @@ export default async function Page() {
       <Hero type="adminBano"></Hero>
       <section>
         <Container>
-          <h1 className="mb-4 text-3xl font-bold">Listar Baños Admin</h1>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {banos.map((bano) => (
               <CardBathEdit key={bano.id_baño} bano={bano} />

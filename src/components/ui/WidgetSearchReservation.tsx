@@ -1,6 +1,5 @@
 "use client";
 
-import { searchReservation } from "@/actions/reservation";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Label } from "@/components/ui/label";
@@ -19,14 +18,14 @@ import {
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { CalendarIcon, Loader2 } from "lucide-react";
+import { CalendarIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import * as React from "react";
-import { useFormStatus } from "react-dom";
 
 const WidgetSearchReservation = () => {
   return (
     <div className="flex flex-col gap-5 rounded-[44px] bg-primarylight p-[8vw]">
-      <h2 className="h2-xl text-center">Buscar reservas existentes</h2>
+      <h2 className="h2-xl text-center">Reservas</h2>
       <p className="text-center">Busca las reservas hechas hasta ahora</p>
       <ReservationSearch></ReservationSearch>
     </div>
@@ -34,10 +33,39 @@ const WidgetSearchReservation = () => {
 };
 
 const ReservationSearch = () => {
-  const [date, setDate] = React.useState<Date>();
+  const [date, setDate] = React.useState<Date | null>();
   const [time, setTime] = React.useState("13:00");
   const [type, setType] = React.useState("1");
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
+
+  const router = useRouter();
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    // Reset error message
+    setErrorMessage(null);
+
+    // Validate inputs
+    if (!date) {
+      setErrorMessage("Por favor, selecciona una fecha.");
+      return;
+    }
+
+    const params = new URLSearchParams();
+    if (date) params.set("date", date.toISOString());
+    if (time) params.set("time", time);
+    if (type) params.set("type", type);
+
+    router.push(`/admin/reserva?${params.toString()}`);
+  };
+
+  const handleReset = () => {
+    setDate(null);
+    setTime("13:00");
+    setType("1");
+    router.push(`/admin/reserva`);
+  };
 
   // Generar los rangos de tiempo de 8AM a 8PM
   const timeSlots = Array.from({ length: 13 }, (_, i) => {
@@ -45,23 +73,8 @@ const ReservationSearch = () => {
     return `${hour.toString().padStart(2, "0")}:00`;
   });
 
-  async function handleSubmit(formData: FormData) {
-    const result = await searchReservation(formData);
-
-    if (result?.success) {
-      console.log(result.message);
-
-      setDate(undefined);
-      setTime("13:00");
-      setType("1");
-    } else {
-      console.log("Error Message");
-      setErrorMessage(result?.message ?? null);
-    }
-  }
-
   return (
-    <form action={handleSubmit}>
+    <form onSubmit={handleSubmit}>
       <div className="space-y-4">
         {errorMessage && (
           <p className="text-sm text-destructive">{errorMessage}</p>
@@ -69,7 +82,6 @@ const ReservationSearch = () => {
         <div className="space-y-2">
           <Label htmlFor="date">Fecha:</Label>
           <Popover>
-            {/* Datepicker from shadcn */}
             <PopoverTrigger asChild>
               <Button
                 variant={"outline"}
@@ -85,18 +97,13 @@ const ReservationSearch = () => {
             <PopoverContent className="w-auto p-0" align="start">
               <Calendar
                 mode="single"
-                selected={date}
+                selected={date ?? undefined}
                 onSelect={setDate}
                 locale={es}
                 initialFocus
               />
             </PopoverContent>
           </Popover>
-          <input
-            type="hidden"
-            name="date"
-            value={date ? date.toISOString() : ""}
-          />
         </div>
 
         <div className="space-y-2">
@@ -131,29 +138,19 @@ const ReservationSearch = () => {
           </Select>
         </div>
       </div>
-      <SubmitButton />
+      <div className="mt-4 flex space-x-2">
+        <Button type="submit" className="w-full bg-primary text-white">
+          Buscar
+        </Button>
+        <Button
+          type="button"
+          onClick={handleReset}
+          className="w-full bg-primarybtn text-white"
+        >
+          Resetear
+        </Button>
+      </div>
     </form>
-  );
-};
-
-const SubmitButton = () => {
-  const { pending } = useFormStatus();
-
-  return (
-    <Button
-      type="submit"
-      className="mt-4 w-full bg-primarybtn text-white"
-      disabled={pending}
-    >
-      {pending ? (
-        <>
-          <Loader2 className="mr-2 size-4 animate-spin" />
-          Procesando...
-        </>
-      ) : (
-        "Buscar"
-      )}
-    </Button>
   );
 };
 
