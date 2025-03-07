@@ -4,11 +4,11 @@ import Hero from "@/components/ui/Hero";
 import WidgetSearchReservation from "@/components/ui/WidgetSearchReservation";
 import { createClient } from "@/utils/supabase/server";
 
-const Page = async ({
-  searchParams,
-}: {
+interface PageProps {
   searchParams: { [key: string]: string | string[] | undefined };
-}) => {
+}
+
+const Page = async ({ searchParams }: PageProps) => {
   const supabase = await createClient();
 
   let query = supabase.from("reserva").select("*");
@@ -31,7 +31,7 @@ const Page = async ({
 
   return (
     <div>
-      <Hero type="adminReservas"></Hero>
+      <Hero type="adminReservas" />
       <section>
         <Container>
           <WidgetSearchReservation />
