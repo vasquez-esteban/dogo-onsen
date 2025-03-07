@@ -7,7 +7,9 @@ import {
 } from "@/app/(auth)/definitions";
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+
 
 export async function signup(
   state: FormState,
@@ -30,19 +32,26 @@ export async function signup(
   }
 
   // 4. Crear el nuevo usuario
-  const { error: authError } = await supabase.auth.signUp(validateFields.data);
+  const { data, error: authError } = await supabase.auth.signUp(validateFields.data);
 
-  const errorMessage = { message: "Error al Logear" };
+
 
   
   if (authError) {
-    console.log(authError);
-    return errorMessage;
+    return {
+      ...state,
+      message: authError.message,
+    };
+  }else if (data?.user?.identities?.length === 0){
+    return {
+      ...state,
+      message: "El ususario con este correo ya existe. Dirigete al login"
+    };
   }
   
 
   // Registro exitoso (requiere confirmación)
-  console.log('Registro exitoso.');
+
   return {
     ...state,
     errors: {},
@@ -93,8 +102,6 @@ export async function getUserRole(): Promise<string | null> {
   } = await supabase.auth.getUser();
 
   if (userError || !user) {
-    console.log("no datos");
-    console.log(userError);
     return null;
   }
 
@@ -105,10 +112,60 @@ export async function getUserRole(): Promise<string | null> {
     .single();
 
   if (error || !userData) {
-    console.log("no datos");
-    console.log(error);
     return null;
   }
 
   return userData.rol;
+}
+
+export async function forgotPassword(state: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const supabase = await createClient();
+  const origin = (await headers()).get("origin");
+
+  // Verificar si el usuario existe
+  const email = formData.get("email") as string;
+  const { data: user, error: userError } = await supabase
+    .from("usuario") 
+    .select("*")
+    .eq("correo", email)
+    .single();
+
+  if (userError || !user) {
+    return { message: "El correo no está asociado a una cuenta." };
+  }
+
+  // Si el usuario existe, enviar el enlace de restablecimiento
+  const { error } = await supabase.auth.resetPasswordForEmail(
+    formData.get("email") as string,
+    {
+      redirectTo: `${origin}/reset-password`,
+    }
+  );
+  
+  if (error) {
+    return { message: "Error al enviar el enlace de recuperación." };
+  }
+  
+  return { message: "¡Restauracion exitosa!. Dirigete a tu correo para finalizar la restauracion." };
+}
+
+export async function resetPassword(formData: FormData, code: string) {
+  const supabase = await createClient();
+  const { error: CodeError } = await supabase.auth.exchangeCodeForSession(code);
+  
+  if (CodeError) {
+    return { status: CodeError?.message };
+  }
+  
+  const { error: updateError } = await supabase.auth.updateUser({ 
+    password: formData.get("password") as string 
+  });
+
+  if (updateError) {
+    return { status: updateError?.message };
+  }
+  
+  return { status: "success" };
 }
