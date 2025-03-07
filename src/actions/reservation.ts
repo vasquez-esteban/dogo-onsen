@@ -3,7 +3,8 @@
 import { FormState } from "@/app/(routes)/reserva/definitions";
 
 export async function createReservation(
-  formData: FormData
+  formData: FormData,
+  state: FormState,
 ): Promise<FormState> {
   try {
     // Simulate a delay to show loading state
@@ -16,6 +17,7 @@ export async function createReservation(
 
     if (isNaN(date.getTime())) {
       return {
+        ...state,
         success: false,
         message: "Fecha inválida",
       };

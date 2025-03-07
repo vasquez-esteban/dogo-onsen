@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useActionState } from "react";
+import ProtectedRoute from "@/components/ui/ProtectedComponent";
 
 interface Bano {
   id_baño: number;
@@ -30,6 +31,7 @@ export default function FormEditarBano({ bano }: { bano: Bano }) {
   const [state, action] = useActionState(updateBath, undefined);
 
   return (
+    <ProtectedRoute>
     <Card className="w-full max-w-md">
       <CardHeader>
         <CardTitle>Editar baño</CardTitle>
@@ -98,7 +100,8 @@ export default function FormEditarBano({ bano }: { bano: Bano }) {
               name="precio"
               type="number"
               min="0"
-              step="1000"
+              max="10000"
+              step="10"
               defaultValue={bano.precio}
               required
             />
@@ -138,5 +141,6 @@ export default function FormEditarBano({ bano }: { bano: Bano }) {
         </form>
       </CardContent>
     </Card>
+    </ProtectedRoute>
   );
 }

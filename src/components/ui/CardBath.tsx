@@ -1,6 +1,6 @@
 "use client";
 
-import bathImg from "@/assets/bano1.webp";
+//import bathImg from "@/assets/bano1.webp";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,6 +12,8 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import Image from "next/image";
 import { useState } from "react";
+import { getImage } from "@/utils/supabase/imageMap";
+
 
 interface Bano {
   id_baño: number;
@@ -24,17 +26,20 @@ interface Bano {
   cantidad_toallas: number;
 }
 
+
 export default function CardBath({ bano }: { bano: Bano }) {
   const [includeSpecialSoaps, setIncludeSpecialSoaps] = useState(false);
+
+  const imageSrc = getImage(bano.id_baño, "bath");
 
   return (
     <Card className="overflow-hidden bg-white">
       <div className="flex flex-col md:flex-row">
         <div className="md:w-1/3">
-          <Image
-            alt="Natural hot spring with blue water surrounded by rocks"
-            className="size-full object-cover"
-            src={bathImg}
+        <Image
+            alt={`Imagen del baño ${bano.nombre}`}
+            className="h-full w-full object-cover rounded-t-md md:rounded-l-md"
+            src={imageSrc}
             height={300}
             width={400}
           />

@@ -1,4 +1,4 @@
-"use client";
+{/*"use client";
 
 import { createReservation } from "@/actions/reservation";
 import { Button } from "@/components/ui/button";
@@ -18,12 +18,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { error } from "console";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { CalendarIcon, Loader2 } from "lucide-react";
 import { redirect } from "next/navigation";
 import * as React from "react";
 import { useFormStatus } from "react-dom";
+import { any } from "zod";
 
 export default function FormReservationClient() {
   const [date, setDate] = React.useState<Date>();
@@ -63,7 +65,7 @@ export default function FormReservationClient() {
         <div className="space-y-2">
           <Label htmlFor="date">Fecha:</Label>
           <Popover>
-            {/* Datepicker from shadcn */}
+            {/* Datepicker from shadcn 
             <PopoverTrigger asChild>
               <Button
                 variant={"outline"}
@@ -171,3 +173,4 @@ const SubmitButton = () => {
     </Button>
   );
 };
+*/}

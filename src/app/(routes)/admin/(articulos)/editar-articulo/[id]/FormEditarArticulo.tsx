@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useActionState } from "react";
+import ProtectedRoute from "@/components/ui/ProtectedComponent";
 
 interface Producto {
   id_producto: number;
@@ -20,6 +21,7 @@ export default function FormEditarArticulo({
   const [state, action, pending] = useActionState(addProducts, undefined);
 
   return (
+    <ProtectedRoute>
     <form action={action}>
       <input type="hidden" name="id_producto" value={producto.id_producto} />
       <div className="flex flex-col gap-6">
@@ -48,5 +50,6 @@ export default function FormEditarArticulo({
         )}
       </div>
     </form>
+    </ProtectedRoute>
   );
 }

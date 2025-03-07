@@ -1,10 +1,10 @@
 import CardBath from "@/components/ui/CardBath";
 import Container from "@/components/ui/Container";
 import Hero from "@/components/ui/Hero";
-import { createClient } from "@/utils/supabase/server";
+import { supabase } from '@/utils/supabase/client';
 
 export default async function Page() {
-  const supabase = await createClient();
+  //const supabase = await createClient();
   const { data: banos, error } = await supabase.from("baño").select("*");
 
   if (error) {

@@ -1,7 +1,7 @@
 "use server";
 
 import { FormState } from "@/app/(routes)/reserva/definitions";
-import { createClient } from "@/utils/supabase/server";
+import { supabase } from '@/utils/supabase/client';
 import { revalidatePath } from "next/cache";
 
 interface UpdateBathData {
@@ -18,7 +18,7 @@ interface UpdateBathData {
 export async function searchBano(formData: FormData): Promise<FormState> {
   try {
     // Simulate a delay to show loading state
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    //await new Promise((resolve) => setTimeout(resolve, 1000));
 
     const date = new Date(formData.get("date") as string);
     const time = formData.get("time") as string;
@@ -56,7 +56,7 @@ export async function updateBath(
   // Simulate a delay
   try {
     //await new Promise((resolve) => setTimeout(resolve, 1000));
-    const supabase = await createClient();
+    //const supabase = await createClient();
 
     const data: UpdateBathData = {
       id_baño: Number(formData.get("id_baño")),
@@ -71,7 +71,9 @@ export async function updateBath(
 
     // Validar que el ID es un número válido
     if (isNaN(data.id_baño)) {
-      return { message: "ID de baño inválido" };
+      return { 
+        ...state,
+        message: "ID de baño inválido" };
     }
 
     // Llamar a la función RPC en Supabase

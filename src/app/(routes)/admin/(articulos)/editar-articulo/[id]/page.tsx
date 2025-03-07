@@ -4,13 +4,14 @@ import {
   CardDescription,
   CardHeader,
 } from "@/components/ui/card";
-import { createClient } from "@/utils/supabase/server";
+import { supabase } from '@/utils/supabase/client';
 import { notFound } from "next/navigation";
 import FormEditarArticulo from "./FormEditarArticulo";
+import ProtectedRoute from "@/components/ui/ProtectedComponent";
 
 // Función para obtener datos desde Supabase
 async function getProducto(id: string) {
-  const supabase = await createClient();
+  //const supabase = await createClient();
   const { data, error } = await supabase
     .from("producto")
     .select("*")
@@ -38,6 +39,7 @@ export default async function Page({
   }
 
   return (
+    <ProtectedRoute>
     <>
       <h1>Editar Artículo {producto.nombre}</h1>
       <Card>
@@ -51,5 +53,6 @@ export default async function Page({
         </CardContent>
       </Card>
     </>
+    </ProtectedRoute>
   );
 }

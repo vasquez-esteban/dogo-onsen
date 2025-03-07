@@ -1,4 +1,4 @@
-import jabones from "@/assets/producto1.webp";
+import bano1 from "@/assets/bano1.webp"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 
@@ -9,7 +9,7 @@ const CardReservation = () => {
     <div className="w-70 sm:w-auto">
       <Card className="w-full sm:w-96">
         <CardHeader>
-          <Image src={jabones} alt="Imagen de jabones"></Image>
+          <Image src={bano1} alt="Imagen de jabones"></Image>
         </CardHeader>
         <CardContent>
           <CardTitle>Baño tradicional</CardTitle>

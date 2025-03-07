@@ -4,7 +4,7 @@ import {
   CardDescription,
   CardHeader,
 } from "@/components/ui/card";
-import FormReservationClient from "./FormReservation";
+//import FormReservationClient from "./FormReservation";
 
 export default function Page() {
   return (
@@ -17,7 +17,7 @@ export default function Page() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <FormReservationClient></FormReservationClient>
+          {/*<FormReservationClient></FormReservationClient>*/}
         </CardContent>
       </Card>
     </>

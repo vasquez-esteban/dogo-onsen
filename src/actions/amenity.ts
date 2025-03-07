@@ -1,7 +1,7 @@
 "use server";
 
 import { FormState } from "@/app/(routes)/admin/(articulos)/editar-articulo/definitions";
-import { createClient } from "@/utils/supabase/server";
+import { supabase } from '@/utils/supabase/client';
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
@@ -25,6 +25,7 @@ export async function addProducts(
 
   if (!validatedFields.success) {
     return {
+      ...state,
       success: false,
       errors: validatedFields.error.flatten().fieldErrors,
     };
@@ -35,7 +36,7 @@ export async function addProducts(
   const id_producto = Number(validatedFields.data.id_producto);
 
   // Creación del cliente de Supabase
-  const supabase = await createClient();
+  //const supabase = await createClient();
 
   // Inicio de una transacción
   const { error } = await supabase.rpc("actualizar_cantidad_producto", {
@@ -56,4 +57,14 @@ export async function addProducts(
     success: true,
     message: "Productos agregados exitosamente",
   };
+}
+
+export async function getProductos() {
+  const { data: productos, error } = await supabase.from("producto").select("*");
+
+  if (error) {
+    throw new Error(`Error al cargar productos: ${error.message}`);
+  }
+
+  return productos;
 }

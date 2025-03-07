@@ -5,7 +5,7 @@ import {
   SigninFormSchema,
   SignupFormSchema,
 } from "@/app/(auth)/definitions";
-import { createClient } from "@/utils/supabase/server";
+import { supabase } from '@/utils/supabase/client';
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -13,7 +13,7 @@ export async function signup(
   state: FormState,
   formData: FormData
 ): Promise<FormState> {
-  const supabase = await createClient();
+  //const supabase = await createClient();
 
   // 1. Validar datos del formulario
   const validateFields = SignupFormSchema.safeParse({
@@ -46,7 +46,7 @@ export async function signin(
   state: FormState,
   formData: FormData
 ): Promise<FormState> {
-  const supabase = await createClient();
+  //const supabase = await createClient();
 
   // 1. Validar datos del formulario
   const validateFields = SigninFormSchema.safeParse({
@@ -63,7 +63,7 @@ export async function signin(
   }
 
   // 2. Hacer Login y retornar Errores de credenciales
-  const { error } = await supabase.auth.signInWithPassword(validateFields.data);
+  const { data, error } = await supabase.auth.signInWithPassword(validateFields.data);
 
   const errorMessage = { message: "Credenciales Inválidas" };
 
@@ -71,12 +71,15 @@ export async function signin(
     return errorMessage;
   }
 
+  // Establecer la sesión en el servidor
+await supabase.auth.setSession(data.session);
+
   revalidatePath("/", "layout");
   redirect("/");
 }
 
 export async function getUserRole(): Promise<string | null> {
-  const supabase = await createClient();
+  //const supabase = await createClient();
 
   // Get the authenticated user
   const {

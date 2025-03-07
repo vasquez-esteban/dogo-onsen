@@ -1,3 +1,4 @@
+"use client";
 import {
   Card,
   CardContent,
@@ -5,8 +6,19 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { FormSignin } from "./FormSignin";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Page() {
+  const { user, isLoading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoading && user) {
+      router.push('/'); // Redirige si el usuario está autenticado
+    }
+  }, [user, isLoading, router]);
   return (
     <>
       <h1>¡Bienvenido Viajero!</h1>

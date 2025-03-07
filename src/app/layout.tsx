@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import "../styles/globals.css";
 import MainLayout from "./layouts/MainLayout";
 import LenisScrollProvider from "./providers/lenis";
+import { AuthProvider } from "@/context/AuthContext";
 
 export const metadata: Metadata = {
   title: "Dogo Onsen",
@@ -18,7 +19,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} ${inknut.variable} antialiased`}>
         <LenisScrollProvider>
+          <AuthProvider>
           <MainLayout>{children}</MainLayout>
+          </AuthProvider>
         </LenisScrollProvider>
       </body>
     </html>

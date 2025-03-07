@@ -1,7 +1,7 @@
 import CardProduct from "@/components/ui/CardProduct";
 import Container from "@/components/ui/Container";
 import Hero from "@/components/ui/Hero";
-import { createClient } from "@/utils/supabase/server";
+import { supabase } from '@/utils/supabase/client';
 
 interface Producto {
   id_producto: number;
@@ -10,7 +10,7 @@ interface Producto {
 }
 
 export default async function Page() {
-  const supabase = await createClient();
+  //const supabase = await createClient();
 
   const { data: productos, error } = await supabase
     .from("producto")
