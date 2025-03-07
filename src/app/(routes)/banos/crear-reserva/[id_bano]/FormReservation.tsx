@@ -21,11 +21,21 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { CalendarIcon, Loader2 } from "lucide-react";
-import { redirect } from "next/navigation";
 import * as React from "react";
 import { useFormStatus } from "react-dom";
 
-export default function FormReservationClient() {
+interface Bano {
+  id_baño: number;
+  nombre: string;
+  descripcion: string;
+  capacidad: number;
+  encargado_limpieza: string;
+  precio: number;
+  cantidad_jabones: number;
+  cantidad_toallas: number;
+}
+
+export default function FormReservationClient({ bano }: { bano: Bano }) {
   const [date, setDate] = React.useState<Date>();
   const [time, setTime] = React.useState("13:00");
   const [spirits, setSpirits] = React.useState("1");
@@ -48,16 +58,14 @@ export default function FormReservationClient() {
       setTime("13:00");
       setSpirits("1");
       setIncludeSpecialSoaps(false);
-
-      redirect("/");
     } else {
-      console.log("Error Message");
-      setErrorMessage(result?.message ?? null);
+      setErrorMessage(result?.message || null);
     }
   }
 
   return (
     <form action={handleSubmit}>
+      <input type="hidden" name="id_baño" value={bano.id_baño} />
       <div className="space-y-4">
         {errorMessage && <p className="text-sm text-red-500">{errorMessage}</p>}
         <div className="space-y-2">
@@ -140,10 +148,6 @@ export default function FormReservationClient() {
           >
             Incluir Jabones Especiales ($15.000/Persona)
           </label>
-        </div>
-
-        <div className="rounded-md border px-4 py-2 text-center font-medium">
-          $ 55.000 / Hora
         </div>
       </div>
       <SubmitButton />

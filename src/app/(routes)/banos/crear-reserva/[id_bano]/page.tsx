@@ -6,14 +6,10 @@ import {
 } from "@/components/ui/card";
 import { createClient } from "@/utils/supabase/server";
 import { notFound } from "next/navigation";
-import FormEditarBano from "./FormEditarBano";
+import FormReservationClient from "./FormReservation";
 
 // Función para obtener datos desde Supabase
-async function getBano(id: string | undefined) {
-  if (!id || isNaN(Number(id))) {
-    console.error("ID inválido:", id);
-    return null;
-  }
+async function getBano(id: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("baño")
@@ -32,29 +28,27 @@ async function getBano(id: string | undefined) {
 export default async function Page({
   params,
 }: {
-  params: Promise<{ id_baño: string }>;
+  params: Promise<{ id_bano: string }>;
 }) {
-  const { id_baño } = await params;
+  const { id_bano } = await params;
 
-  if (!id_baño || isNaN(Number(id_baño))) {
-    console.error("ID inválido:", id_baño);
-    return notFound();
-  }
-  const bano = await getBano(id_baño);
+  const bano = await getBano(id_bano);
 
   if (!bano) {
-    return notFound(); // Redirige a la página 404 si el baño no existe
+    notFound();
   }
 
   return (
     <>
-      <h1>Editar Baño {bano.nombre}</h1>
+      <h1>Reserva {bano.nombre}</h1>
       <Card>
         <CardHeader>
-          <CardDescription>Capacidad: {bano.capacidad}</CardDescription>
+          <CardDescription>
+            Diligencia el formulario para poder reservar
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <FormEditarBano bano={bano} />
+          <FormReservationClient bano={bano}></FormReservationClient>
         </CardContent>
       </Card>
     </>
