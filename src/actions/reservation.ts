@@ -5,7 +5,7 @@ import { createClient } from "@/utils/supabase/server";
 import { z } from "zod";
 
 const reservationSchema = z.object({
-  id_bano: z.coerce.number(), // Use coerce to ensure it's converted to a number
+  id_bano: z.coerce.number().min(1, "El baño es obligatorio."), // Coerced to number
   date: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: "Fecha inválida.",
   }),
@@ -31,9 +31,10 @@ export async function createReservation(
       date: formData.get("date"),
       time: formData.get("time"),
       spirits: formData.get("spirits"),
-      includeSpecialSoaps:
-        formData.get("includeSpecialSoaps") === "on" ? true : false,
+      includeSpecialSoaps: formData.get("includeSpecialSoaps") === "on",
     };
+
+    console.log("Form data received:", rawData);
 
     // Validar datos con Zod
     const validatedData = reservationSchema.safeParse(rawData);
@@ -57,16 +58,21 @@ export async function createReservation(
     const { id_bano, date, time, spirits, includeSpecialSoaps } =
       validatedData.data;
 
-    console.log(validatedData.data);
+    console.log("Validated data:", validatedData.data);
+
+    // Formato correcto para la fecha (opcional, según el formato esperado por Supabase)
+    const formattedDate = new Date(date).toISOString().split("T")[0];
 
     // Llamar a la función almacenada en Supabase
     const { data, error } = await supabase.rpc("crear_reserva", {
       p_id_bano: id_bano,
-      p_fecha: date,
+      p_fecha: formattedDate, // Usar fecha formateada
       p_hora: time,
       p_cantidad_espiritu: spirits,
       p_jabon_especial: includeSpecialSoaps,
     });
+
+    console.log("Response from Supabase:", data, error);
 
     if (error) {
       return {
@@ -145,6 +151,7 @@ export async function createReservation(
     // Si llegamos aquí, la reserva se creó exitosamente
     return { success: true, message: "Reserva creada exitosamente." };
   } catch (error) {
+    console.error("Error completo:", error);
     const errorMessage = error instanceof Error ? error.message : String(error);
     return {
       success: false,

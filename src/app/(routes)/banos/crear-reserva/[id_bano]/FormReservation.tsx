@@ -41,6 +41,9 @@ export default function FormReservationClient({ bano }: { bano: Bano }) {
   const [spirits, setSpirits] = React.useState("1");
   const [includeSpecialSoaps, setIncludeSpecialSoaps] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = React.useState<string | null>(
+    null
+  );
 
   // Generar los rangos de tiempo de 8AM a 8PM
   const timeSlots = Array.from({ length: 13 }, (_, i) => {
@@ -52,7 +55,8 @@ export default function FormReservationClient({ bano }: { bano: Bano }) {
     const result = await createReservation(formData);
 
     if (result?.success) {
-      console.log(result.message);
+      setSuccessMessage("Reserva realizada con éxito.");
+      setErrorMessage(null);
 
       setDate(undefined);
       setTime("13:00");
@@ -60,6 +64,7 @@ export default function FormReservationClient({ bano }: { bano: Bano }) {
       setIncludeSpecialSoaps(false);
     } else {
       setErrorMessage(result?.message || null);
+      setSuccessMessage(null);
     }
   }
 
@@ -68,6 +73,9 @@ export default function FormReservationClient({ bano }: { bano: Bano }) {
       <input type="hidden" name="id_baño" value={Number(bano.id_baño)} />
       <div className="space-y-4">
         {errorMessage && <p className="text-sm text-red-500">{errorMessage}</p>}
+        {successMessage && (
+          <p className="text-sm text-green-500">{successMessage}</p>
+        )}
         <div className="space-y-2">
           <Label htmlFor="date">Fecha:</Label>
           <Popover>
