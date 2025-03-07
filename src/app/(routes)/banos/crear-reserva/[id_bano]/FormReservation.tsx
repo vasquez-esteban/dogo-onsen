@@ -65,7 +65,7 @@ export default function FormReservationClient({ bano }: { bano: Bano }) {
 
   return (
     <form action={handleSubmit}>
-      <input type="hidden" name="id_baño" value={bano.id_baño} />
+      <input type="hidden" name="id_baño" value={Number(bano.id_baño)} />
       <div className="space-y-4">
         {errorMessage && <p className="text-sm text-red-500">{errorMessage}</p>}
         <div className="space-y-2">

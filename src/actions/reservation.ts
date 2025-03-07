@@ -5,7 +5,7 @@ import { createClient } from "@/utils/supabase/server";
 import { z } from "zod";
 
 const reservationSchema = z.object({
-  id_bano: z.string().min(1, "El baño es obligatorio."),
+  id_bano: z.coerce.number(), // Use coerce to ensure it's converted to a number
   date: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: "Fecha inválida.",
   }),
@@ -31,7 +31,8 @@ export async function createReservation(
       date: formData.get("date"),
       time: formData.get("time"),
       spirits: formData.get("spirits"),
-      includeSpecialSoaps: formData.get("includeSpecialSoaps") === "on",
+      includeSpecialSoaps:
+        formData.get("includeSpecialSoaps") === "on" ? true : false,
     };
 
     // Validar datos con Zod
@@ -56,6 +57,8 @@ export async function createReservation(
     const { id_bano, date, time, spirits, includeSpecialSoaps } =
       validatedData.data;
 
+    console.log(validatedData.data);
+
     // Llamar a la función almacenada en Supabase
     const { data, error } = await supabase.rpc("crear_reserva", {
       p_id_bano: id_bano,
@@ -73,64 +76,73 @@ export async function createReservation(
       };
     }
 
-    if (typeof data === "string" && data.startsWith("Error:")) {
-      // Mapear los errores específicos a los campos correspondientes
-      if (data.includes("No se encontró el usuario autenticado")) {
-        return {
-          success: false,
-          message: "Sesión expirada.",
-          errors: {
-            user: ["Usuario no autenticado. Inicia sesión nuevamente."],
-          },
-        };
-      }
-      if (data.includes("El baño no existe")) {
-        return {
-          success: false,
-          message: "Baño no encontrado.",
-          errors: { name: ["El baño seleccionado no existe."] },
-        };
-      }
-      if (data.includes("La fecha y hora ya están reservadas")) {
-        return {
-          success: false,
-          message: "Horario no disponible.",
-          errors: { name: ["Este horario ya está ocupado. Elige otro."] },
-        };
-      }
-      if (data.includes("No hay suficientes jabones")) {
-        return {
-          success: false,
-          message: "Inventario insuficiente.",
-          errors: { name: ["No hay suficientes jabones en el inventario."] },
-        };
-      }
-      if (data.includes("No hay suficientes toallas")) {
-        return {
-          success: false,
-          message: "Inventario insuficiente.",
-          errors: { name: ["No hay suficientes toallas disponibles."] },
-        };
-      }
-      if (data.includes("No hay suficiente jabón especial")) {
-        return {
-          success: false,
-          message: "Producto no disponible.",
-          errors: {
-            name: ["No hay jabón especial disponible."],
-          },
-        };
-      }
-
-      // Error general si no se detectó uno específico
-      const errorMessage = data.replace("Error: ", "");
+    // Manejar los mensajes de error específicos del procedimiento almacenado
+    if (data === "Error: No se encontró el usuario autenticado.") {
       return {
         success: false,
-        message: "Error en la reserva.",
-        errors: { name: [errorMessage] },
+        message: "Sesión expirada.",
+        errors: {
+          user: ["Usuario no autenticado. Inicia sesión nuevamente."],
+        },
       };
     }
 
+    if (data === "Ya reservado") {
+      return {
+        success: false,
+        message: "Horario no disponible.",
+        errors: {
+          name: ["Este día/horario ya está ocupado. Elige otro."],
+        },
+      };
+    }
+
+    if (data === "Jabones insuficientes") {
+      return {
+        success: false,
+        message: "Inventario insuficiente.",
+        errors: { name: ["No hay suficientes jabones en el inventario."] },
+      };
+    }
+
+    if (data === "Toallas insuficientes") {
+      return {
+        success: false,
+        message: "Inventario insuficiente.",
+        errors: { name: ["No hay suficientes toallas disponibles."] },
+      };
+    }
+
+    if (data === "Jabones especiales insuficientes") {
+      return {
+        success: false,
+        message: "Producto no disponible.",
+        errors: {
+          name: ["No hay jabón especial disponible."],
+        },
+      };
+    }
+
+    if (data === "Jabones especiales NE") {
+      return {
+        success: false,
+        message: "Producto no disponible.",
+        errors: {
+          name: ["Los jabones especiales no están disponibles en el sistema."],
+        },
+      };
+    }
+
+    if (data && data !== "Reserva creada") {
+      // Manejar cualquier otro mensaje de error no previsto
+      return {
+        success: false,
+        message: "Error en la reserva.",
+        errors: { name: [data] },
+      };
+    }
+
+    // Si llegamos aquí, la reserva se creó exitosamente
     return { success: true, message: "Reserva creada exitosamente." };
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
