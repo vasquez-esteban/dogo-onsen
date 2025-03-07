@@ -1,15 +1,19 @@
-# REQUERIMIENTOS
+# ENTREGA FINAL - DOGO ONSEN
 
 - Se necesita pnpm >9.15.1 y Node 22.12.0 (LTS).
 
 Para correr localmente usar `pnpm install` y `pnpm run dev`
+
+Se necesitan también las credenciales de Supabase en un archivo `.env.local` que podemos compartir si es necesario (Pero no queremos porque nos revientan la API)
+
+Por el momento se puede visitar la página en [Dogo Onsen](https://dogo-onsen.vercel.app)
 
 **Importante antes de hacer push**
 
 - Correr `pnpm run lint`. Si el resultado da errores, el push puede fallar.
 - Correr `pnpm run fmt`. Para formatear código y mantener consistencia.
 
-## Dependencias principales
+## Dependencias Principales
 
 ### - `next`:
 
@@ -28,11 +32,11 @@ Es una **librería de componentes** para React que ofrece una colección de comp
 - **`eslint`**: Es una herramienta que ayuda a encontrar errores en código TypeScript y asegura las buenas prácticas.
 - **`prettier`**: Es un formateador de código que asegura que el código siga un estilo consistente, lo que hace que sea más fácil de leer y mantener.
 
-## Base de datos
+## Base De Datos
 
 ### - `supabase (SQL)`:
 
-**Supabase** es una backend as a service **SQL** (PostgreSQL). Ofrece bases de datos, autenticación, almacenamiento y funciones en tiempo real.
+**Supabase** es una backend as a service **SQL** (PostgreSQL). Aquí tenemos nuestros proveedores de Autenticación, Tablas Relacionales y funciones rpc.
 
 # ELICITACIÓN
 
@@ -46,31 +50,7 @@ Cómo desarrollador web es tu misión replicar un servicio de hotelería para es
 
 El proceso de Elicitación está en el documento Requisitos.docx. Incluye link al diseño.
 
-# Fases de Desarrollo:
-
-### Front
-
-- Actualmente en versión inicial.
-- Faltan detalles de UI, lógicas de validación, enrutamiento y formularios.
-
-### Back
-
-- Integrar Backend con Server Actions:
-  - Autenticación.
-  - Base de datos.
-
 # RECURSOS
-
-### Link de Producción
-
-[Link Dogo Onsen](https://dogo-onsen.vercel.app/)
-
-_Rutas que no son navegables:_
-
-- [Admin Editar Inventario](https://dogo-onsen.vercel.app/admin/editar-articulo)
-- [Admin Editar Baños](https://dogo-onsen.vercel.app/admin/editar-bano)
-- [Admin Buscar Reservas](https://dogo-onsen.vercel.app/admin/reserva)
-- [Cliente Hacer Reserva](https://dogo-onsen.vercel.app/reserva)
 
 ### Drive
 
@@ -79,3 +59,10 @@ _Rutas que no son navegables:_
 ### Figma
 
 [Link de Figma](https://www.figma.com/design/SpvcNni6VqLz8TlPPqKX6N/Dogo-Onsen-Mockups?m=auto&t=11pQd1QHvepSuTXR-6)
+
+# Conclusiones
+
+Se consigue una gran fidelidad al proceso de elicitación de Requisitos en cuanto a funcionalidad y al diseño en Figma. Podríamos agregar mejoras de UX, UI y optimización como lo pueden ser
+
+- Suspense para mostrar pantallas de carga mientras se navega entre rutas
+- View Transitions para mostrar una animación suave de transición entre páginas
