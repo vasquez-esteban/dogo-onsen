@@ -1,6 +1,6 @@
 "use server";
 
-import { FormState } from "@/app/(routes)/reserva/definitions";
+import { FormState } from "@/app/(routes)/banos/crear-reserva/definitions";
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 
