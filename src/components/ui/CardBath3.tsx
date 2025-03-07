@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,10 +8,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { createClient } from "@/utils/supabase/client";
 import { getImage } from "@/utils/supabase/imageMaps";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/utils/supabase/client";
+import { useEffect, useState } from "react";
 
 interface Bano {
   id_baño: number;
@@ -25,7 +25,13 @@ interface Bano {
   cantidad_toallas: number;
 }
 
-export default function CardBath3({ bano, userId }: { bano: Bano; userId: string | null }) {
+export default function CardBath3({
+  bano,
+  userId,
+}: {
+  bano: Bano;
+  userId: string | null;
+}) {
   const router = useRouter();
   const supabase = createClient();
   const imageSrc = getImage(bano.id_baño, "bath");
@@ -126,7 +132,7 @@ export default function CardBath3({ bano, userId }: { bano: Bano; userId: string
               <span className="text-xs text-muted-foreground">/hora</span>
             </div>
 
-            {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+            {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
 
             <Button
               onClick={handleReserva}

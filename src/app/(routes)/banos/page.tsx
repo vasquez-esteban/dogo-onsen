@@ -19,7 +19,9 @@ export default async function Page() {
   const userId = user ? user.id : null; // ID correcto del usuario en Supabase
 
   // Obtener la lista de baños
-  const { data: banos, error: banosError } = await supabase.from("baño").select("*");
+  const { data: banos, error: banosError } = await supabase
+    .from("baño")
+    .select("*");
 
   if (banosError) {
     console.error("Error al cargar los baños:", banosError);
