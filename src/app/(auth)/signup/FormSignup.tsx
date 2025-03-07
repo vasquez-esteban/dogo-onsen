@@ -21,10 +21,13 @@ export function FormSignup() {
             type="email"
             placeholder="Correo Electrónico"
             required
-          />
-          {state?.errors?.email && (
-            <p className="text-sm text-red-500">{state.errors.email}</p>
-          )}
+            aria-describedby="email-error"
+            />
+            {state?.errors?.email && state?.message === undefined && (
+              <p id="email-error" className="text-sm text-red-500">
+                {state.errors.email.join(", ") || "Ingresa un correo válido."}
+              </p>
+            )}
         </div>
 
         <div className="grid gap-2">
@@ -37,9 +40,10 @@ export function FormSignup() {
             name="password"
             placeholder="Contraseña"
             required
+            aria-describedby="password-error"
           />
-          {state?.errors?.password && (
-            <div className="text-sm text-red-500">
+          {state?.errors?.password && state?.message === undefined && (
+            <div id="password-error" className="text-sm text-red-500">
               <p>La contraseña debe:</p>
               <ul>
                 {state.errors.password.map((error) => (
@@ -49,6 +53,19 @@ export function FormSignup() {
             </div>
           )}
         </div>
+        {/* Mensaje de confirmación */}
+        {state?.message && (
+          <p
+            className={`text-sm ${
+              state.message.includes("¡Registro exitoso!")
+                ? "text-green-500"
+                : "text-red-500"
+            }`}
+            aria-live="polite"
+          >
+            {state.message}
+          </p>
+        )}
         <Button aria-disabled={pending} type="submit" className="w-full">
           {pending ? "Cargando..." : "Registrarse"}
         </Button>
