@@ -5,22 +5,25 @@ import WidgetSearchReservation from "@/components/ui/WidgetSearchReservation";
 import { createClient } from "@/utils/supabase/server";
 
 interface PageProps {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 const Page = async ({ searchParams }: PageProps) => {
   const supabase = await createClient();
 
+  // Await searchParams because it's a Promise
+  const resolvedSearchParams = await searchParams;
+
   let query = supabase.from("reserva").select("*");
 
-  if (searchParams.date) {
-    query = query.eq("fecha", searchParams.date);
+  if (resolvedSearchParams.date) {
+    query = query.eq("fecha", resolvedSearchParams.date);
   }
-  if (searchParams.time) {
-    query = query.eq("hora", searchParams.time);
+  if (resolvedSearchParams.time) {
+    query = query.eq("hora", resolvedSearchParams.time);
   }
-  if (searchParams.type) {
-    query = query.eq("id_baño", searchParams.type);
+  if (resolvedSearchParams.type) {
+    query = query.eq("id_baño", resolvedSearchParams.type);
   }
 
   const { data: reservas, error } = await query;
