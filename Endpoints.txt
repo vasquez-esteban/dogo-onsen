@@ -1,0 +1,197 @@
+
+Desde la base de datos se tienen los siguientes endpoints:
+
+
+cancelar, crear usuario, es admin, ver banos, ver reserva admin
+--------------------------------------------------------------------------------------------------------------------------------
+
+Para CANCELAR RESERVA
+
+CREATE OR REPLACE FUNCTION cancelar_reserva(
+    p_id_reserva INT  -- ID de la reserva a cancelar
+) RETURNS TEXT
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    id_usuario_actual UUID;
+    reserva_existente INT;
+    reserva_fecha TIMESTAMP;
+    horas_restantes INTERVAL;
+    tiene_jabon BOOLEAN;
+    jabones_usados INT;
+    toallas_usadas INT;
+BEGIN
+    -- Obtener el ID del usuario autenticado
+    SELECT auth.uid() INTO id_usuario_actual;
+
+    -- Verificar si el usuario está autenticado
+    IF id_usuario_actual IS NULL THEN
+        RETURN 'Error: No se encontró el usuario autenticado.';
+    END IF;
+
+    -- Verificar si la reserva existe y pertenece al usuario
+    SELECT COUNT(*), fecha + hora, jabon_especial
+    INTO reserva_existente, reserva_fecha, tiene_jabon
+    FROM reserva
+    WHERE id_reserva = p_id_reserva AND id_usuario = id_usuario_actual
+    GROUP BY fecha, hora, jabon_especial;
+
+    IF reserva_existente = 0 THEN
+        RETURN 'Error: No se encontró la reserva o no pertenece al usuario.';
+    END IF;
+
+    -- Calcular el tiempo restante antes de la reserva
+    SELECT (reserva_fecha - NOW()) INTO horas_restantes;
+
+    -- Verificar si quedan menos de 24 horas
+    IF horas_restantes < INTERVAL '24 hours' THEN
+        RETURN 'Error: No se puede cancelar la reserva con menos de 24 horas de anticipación.';
+    END IF;
+
+    -- Obtener los productos (jabones y toallas) usados en la reserva
+    SELECT cantidad INTO jabones_usados
+    FROM baño_producto
+    WHERE id_baño = (SELECT id_baño FROM reserva WHERE id_reserva = p_id_reserva)
+      AND id_producto = 2;  -- id_producto = 2 para jabones
+
+    SELECT cantidad INTO toallas_usadas
+    FROM baño_producto
+    WHERE id_baño = (SELECT id_baño FROM reserva WHERE id_reserva = p_id_reserva)
+      AND id_producto = 3;  -- id_producto = 3 para toallas
+
+    -- Si jabon_especial fue usado, devolver 1 unidad al stock
+    IF tiene_jabon THEN
+        UPDATE producto SET cantidad = cantidad + 1 WHERE id_producto = 1;
+    END IF;
+
+    -- Restaurar jabones y toallas al inventario de producto
+    IF jabones_usados IS NOT NULL THEN
+        UPDATE producto SET cantidad = cantidad + jabones_usados WHERE id_producto = 2;
+    END IF;
+
+    IF toallas_usadas IS NOT NULL THEN
+        UPDATE producto SET cantidad = cantidad + toallas_usadas WHERE id_producto = 3;
+    END IF;
+
+    -- Eliminar la reserva
+    DELETE FROM reserva WHERE id_reserva = p_id_reserva;
+
+    RETURN 'Reserva cancelada exitosamente y productos restaurados al inventario.';
+END;
+$$;
+
+--------------------------------------------------------------------------------------------------------------------------------
+Para verificar si es Admin
+
+CREATE OR REPLACE FUNCTION es_admin()
+RETURNS BOOLEAN
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  RETURN EXISTS (
+    SELECT 1 FROM public.roles
+    WHERE id_usuario = auth.uid() AND rol = 'Admin'
+  );
+END;
+$$;
+
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+Para crear usuario
+
+-- Crear función que maneja la inserción automática
+CREATE OR REPLACE FUNCTION crear_usuario_y_rol()
+RETURNS TRIGGER 
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    -- Insertar en la tabla usuario
+    INSERT INTO public.usuario (id_usuario, nombre)
+    VALUES (NEW.id, 'Espiritu');
+
+    -- Insertar el rol "Cliente" en la tabla roles
+    INSERT INTO public.roles (id_usuario, rol)
+    VALUES (NEW.id, 'Cliente');
+
+    RETURN NEW;
+END;
+$$;
+
+-- Crear el trigger para ejecutarlo cuando se inserte un nuevo usuario en auth.users
+CREATE TRIGGER trigger_crear_usuario_y_rol
+AFTER INSERT ON auth.users
+FOR EACH ROW
+EXECUTE FUNCTION crear_usuario_y_rol();
+
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+Para ver reservas admin
+
+CREATE OR REPLACE FUNCTION ver_reservas_admin()
+RETURNS TABLE (
+    id_reserva INT,
+    id_usuario UUID,
+    id_baño INT,
+    fecha DATE,
+    hora TIME,
+    cantidad_espiritu INT,
+    jabon_especial BOOLEAN
+) 
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    usuario_rol TEXT;
+    id_usuario_actual UUID;
+BEGIN
+    -- Obtener el ID del usuario autenticado
+    SELECT auth.uid() INTO id_usuario_actual;
+
+    -- Verificar el rol del usuario en la tabla "roles"
+    SELECT rol INTO usuario_rol 
+    FROM roles 
+    WHERE id_usuario = id_usuario_actual;
+
+    -- Si el usuario no es Admin, denegar acceso
+    IF usuario_rol IS NULL OR usuario_rol <> 'Admin' THEN
+        RAISE EXCEPTION 'Acceso denegado: Solo los administradores pueden ver las reservas.';
+    END IF;
+
+    -- Devolver todas las reservas sin incluir "estado"
+    RETURN QUERY
+    SELECT id_reserva, id_usuario, id_baño, fecha, hora, cantidad_espiritu, jabon_especial
+    FROM reserva;
+END;
+$$;
+
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+Para ver baños
+
+CREATE OR REPLACE FUNCTION ver_baños_disponibles(
+    fecha_param DATE, 
+    hora_param TIME
+) RETURNS TABLE (
+    id_baño INT,
+    nombre TEXT,
+    descripcion TEXT,
+    capacidad INT,
+    encargado_limpieza TEXT,
+    precio NUMERIC,
+    estado TEXT
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY 
+    SELECT b.id_baño, b.nombre, b.descripcion, b.capacidad, 
+           b.encargado_limpieza, b.precio, b.estado
+    FROM public.baño b
+    WHERE b.id_baño NOT IN (
+        SELECT r.id_baño FROM public.reserva r
+        WHERE r.fecha = fecha_param AND r.hora = hora_param
+    )
+    AND b.estado = 'Disponible';  
+$$;
