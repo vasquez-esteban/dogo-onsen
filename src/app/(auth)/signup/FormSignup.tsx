@@ -22,12 +22,12 @@ export function FormSignup() {
             placeholder="Correo Electrónico"
             required
             aria-describedby="email-error"
-            />
-            {state?.errors?.email && state?.message === undefined && (
-              <p id="email-error" className="text-sm text-red-500">
-                {state.errors.email.join(", ") || "Ingresa un correo válido."}
-              </p>
-            )}
+          />
+          {state?.errors?.email && state?.message === undefined && (
+            <p id="email-error" className="text-sm text-red-500">
+              {state.errors.email.join(", ") || "Ingresa un correo válido."}
+            </p>
+          )}
         </div>
 
         <div className="grid gap-2">

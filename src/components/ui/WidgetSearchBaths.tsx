@@ -35,7 +35,7 @@ const WidgetSearchBaths = () => {
 const ReservationSearch = () => {
   const [date, setDate] = React.useState<Date | null>();
   const [time, setTime] = React.useState("13:00");
-  const [type, setType] = React.useState("1");
+  const [spirits, setSpirits] = React.useState("1"); // Cambio: Se reemplaza type por spirits
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
   const router = useRouter();
@@ -55,7 +55,7 @@ const ReservationSearch = () => {
     const params = new URLSearchParams();
     if (date) params.set("date", date.toISOString());
     if (time) params.set("time", time);
-    if (type) params.set("type", type);
+    if (spirits) params.set("spirits", spirits); // Cambio: Se usa spirits en lugar de type
 
     router.push(`/admin/reserva?${params.toString()}`);
   };
@@ -63,7 +63,7 @@ const ReservationSearch = () => {
   const handleReset = () => {
     setDate(null);
     setTime("13:00");
-    setType("1");
+    setSpirits("1"); // Cambio: Se resetea spirits en lugar de type
     router.push(`/admin/reserva`);
   };
 
@@ -122,14 +122,15 @@ const ReservationSearch = () => {
           </Select>
         </div>
 
+        {/* Cambio: Reemplazar el selector de tipo de baño por cantidad de espíritus */}
         <div className="space-y-2">
-          <Label htmlFor="type">Tipo del baño:</Label>
-          <Select name="type" value={type} onValueChange={setType}>
+          <Label htmlFor="spirits">Cantidad de Espíritus:</Label>
+          <Select name="spirits" value={spirits} onValueChange={setSpirits}>
             <SelectTrigger>
-              <SelectValue placeholder="Seleccionar tipo del baño" />
+              <SelectValue placeholder="Seleccionar cantidad de espíritus" />
             </SelectTrigger>
             <SelectContent>
-              {Array.from({ length: 3 }, (_, i) => (
+              {Array.from({ length: 10 }, (_, i) => (
                 <SelectItem key={i + 1} value={(i + 1).toString()}>
                   {i + 1}
                 </SelectItem>
