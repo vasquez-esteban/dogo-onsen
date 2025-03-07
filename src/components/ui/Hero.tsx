@@ -1,7 +1,9 @@
-import heroArticles from "@/assets/card2.webp";
-import heroBano from "@/assets/hero-bano.webp";
+import heroArticles from "@/assets/articulosCardCliente.webp";
+import heroArticlesAdmin from "@/assets/articuloCard.webp";
+import heroBano from "@/assets/banoCard.webp";
 import heroInfo from "@/assets/hero-info.webp";
 import heroLanding from "@/assets/hero-landing.webp";
+import heroReserva from "@/assets/reserva.webp";
 import Image from "next/image";
 
 const pics = {
@@ -37,13 +39,13 @@ const pics = {
   },
   adminArticles: {
     id: "adminArticles",
-    src: heroArticles,
+    src: heroArticlesAdmin,
     alt: "Imagen de espíritu en baño",
     title: "Gestiona los artículos",
   },
   adminReservas: {
     id: "adminReservas",
-    src: heroBano,
+    src: heroReserva,
     alt: "Imagen de espíritu en baño",
     title: "Gestiona las reservas de baños",
   },

@@ -1,9 +1,10 @@
 "use client";
 
-import bathImg from "@/assets/bano1.webp";
+
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "../card";
+import { getImage } from "@/utils/supabase/imageMaps";
 
 interface Bano {
   id_baño: number;
@@ -15,19 +16,24 @@ interface Bano {
 
 export default function CardBathEdit({ bano }: { bano: Bano }) {
   const router = useRouter();
+  const imageSrc = getImage(bano.id_baño, "bath");
+
 
   return (
-    <div className="w[70px] sm:w-auto">
-      <Card className="w-full sm:w-96">
-        <CardHeader>
+    <div className="w-full sm:w-auto">
+      <Card className="flex size-full flex-col sm:w-96">
+        <CardHeader className="relative">
+        <div className="h-48 w-full overflow-hidden rounded-t-md">
           <Image
-            src={bathImg}
+            src={imageSrc}
             alt={`Imagen de ${bano.nombre}`}
-            width={300}
-            height={200}
+            width={600}
+            height={400}
+            className="size-full object-cover"
           />
+          </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="flex grow flex-col p-4">
           <CardTitle>{bano.nombre}</CardTitle>
           <p>Capacidad: {bano.capacidad} personas</p>
           <p>Precio: ${bano.precio}</p>
