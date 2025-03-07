@@ -1,6 +1,6 @@
 "use client";
 
-import bathImg from "@/assets/bano1.webp";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,6 +11,8 @@ import {
 } from "@/components/ui/card";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { getImage } from "@/utils/supabase/imageMaps";
+
 
 interface Bano {
   id_baño: number;
@@ -25,15 +27,16 @@ interface Bano {
 
 export default function CardBath({ bano }: { bano: Bano }) {
   const router = useRouter();
+  const imageSrc = getImage(bano.id_baño, "bath");
 
   return (
     <Card className="overflow-hidden bg-white">
       <div className="flex flex-col md:flex-row">
         <div className="md:w-1/3">
           <Image
-            alt="Natural hot spring with blue water surrounded by rocks"
-            className="size-full object-cover"
-            src={bathImg}
+            alt={`Imagen del baño ${bano.nombre}`}
+            className="size-full rounded-t-md object-cover md:rounded-l-md"
+            src={imageSrc}
             height={300}
             width={400}
           />

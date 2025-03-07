@@ -98,7 +98,7 @@ export default function FormEditarBano({ bano }: { bano: Bano }) {
               name="precio"
               type="number"
               min="0"
-              step="1000"
+              step="10"
               defaultValue={bano.precio}
               required
             />

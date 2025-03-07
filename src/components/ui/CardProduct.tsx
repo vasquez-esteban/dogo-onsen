@@ -1,9 +1,11 @@
 "use client";
 
-import jabones from "@/assets/producto1.webp";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { getImage } from "@/utils/supabase/imageMaps";
+import { useUserRole } from "@/hook/useUserRole";
 
 interface Producto {
   id_producto: number;
@@ -13,32 +15,38 @@ interface Producto {
 
 const CardProduct = ({ producto }: { producto: Producto }) => {
   const router = useRouter();
+  const { role, loading } = useUserRole();
+  const imageSrc = getImage(producto.id_producto, "product");
+
+  if (loading) {
+    return <p>Cargando...</p>; 
+  }
 
   return (
-    <div className="w-70 sm:w-auto">
+    <div className="w-full sm:w-auto">
       <Card className="w-full sm:w-96">
-        <CardHeader>
-          <Image src={jabones} alt="Imagen de jabones"></Image>
-          {/*<Image
+        <CardHeader className="relative h-48 w-full overflow-hidden rounded-t-2xl">
+        <Image
           src={imageSrc}
           alt={`Imagen de ${producto.nombre}`}
-          width={300}
-          height={200}
+          className=" absolute inset-0 size-full  rounded-t-2xl object-cover"
           placeholder="blur"
-          blurDataURL={imageSrc} // Previsualización de carga
-        />*/}
+        />
         </CardHeader>
-        <CardContent>
+        <CardContent className="flex grow flex-col p-4">
           <CardTitle>{producto.nombre}</CardTitle>
           <p>Cantidad disponible: {producto.cantidad}</p>
+          {/* Muestra el botón solo si el rol no es "Cliente" */}
+          {role !== "Cliente" && (
           <button
-            className="primary-btn mt-10 h-10 w-full"
+            className="primary-btn mt-auto h-10 w-full"
             onClick={() =>
               router.push(`/admin/editar-articulo/${producto.id_producto}`)
             }
           >
             Editar
           </button>
+          )}
         </CardContent>
       </Card>
     </div>

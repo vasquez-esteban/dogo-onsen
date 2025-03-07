@@ -30,16 +30,24 @@ export async function signup(
   }
 
   // 4. Crear el nuevo usuario
-  const { error } = await supabase.auth.signUp(validateFields.data);
+  const { error: authError } = await supabase.auth.signUp(validateFields.data);
 
   const errorMessage = { message: "Error al Logear" };
 
-  if (error) {
+  
+  if (authError) {
+    console.log(authError);
     return errorMessage;
   }
+  
 
-  revalidatePath("/", "layout");
-  redirect("/");
+  // Registro exitoso (requiere confirmación)
+  console.log('Registro exitoso.');
+  return {
+    ...state,
+    errors: {},
+    message: "¡Registro exitoso!. Diríjase a su correo para realizar la confirmación.",
+  };
 }
 
 export async function signin(
