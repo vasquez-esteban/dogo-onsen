@@ -34,7 +34,10 @@ const CardProduct = ({ producto }: { producto: Producto }) => {
         </CardHeader>
         <CardContent className="flex grow flex-col p-4">
           <CardTitle>{producto.nombre}</CardTitle>
-          <p>Cantidad disponible: {producto.cantidad}</p>
+          {role === "Admin" && (
+          <p>Cantidad disponible: {producto.cantidad}</p> 
+          )}
+
           {/* Muestra el botón solo si el rol no es "Cliente" */}
           {role !== "Cliente" && (
             <button

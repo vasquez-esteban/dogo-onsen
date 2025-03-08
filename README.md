@@ -37,6 +37,38 @@ Es una **librería de componentes** para React que ofrece una colección de comp
 ### - `supabase (SQL)`:
 
 **Supabase** es una backend as a service **SQL** (PostgreSQL). Aquí tenemos nuestros proveedores de Autenticación, Tablas Relacionales y funciones rpc.
+<<<<<<< Updated upstream
+=======
+
+---
+
+# Supabase API Endpoints (Cada endpoint se puede mapear a una server action o a un handler del evento)
+
+## Endpoints Disponibles
+
+- **Cancelar reserva** (`cancelar_reserva(id_reserva INT)`)  
+  Cancela una reserva si faltan más de 24 horas y restaura productos al inventario.
+- **Crear usuario** (`crear_usuario_y_rol()`)  
+  Crea un usuario en la tabla `usuario` y asigna el rol de "Cliente" automáticamente.
+- **Verificar si es Admin** (`es_admin()`)  
+  Retorna `TRUE` si el usuario autenticado es administrador.
+- **Ver baños disponibles** (`ver_baños_disponibles(fecha DATE, hora TIME)`)  
+  Devuelve una lista de baños no reservados y disponibles.
+- **Ver reservas (Admin)** (`ver_reservas_admin()`)  
+  Permite a los administradores visualizar todas las reservas.
+- **Actualizar cantidad de un producto** (`actualizar_cantidad_producto(id_producto INT, cantidad INT)`)  
+  Modifica la cantidad de un producto en el inventario.
+- **Crear reserva** (`crear_reserva(id_bano INT, fecha DATE, hora TIME, cantidad_espiritu INT, jabon_especial BOOLEAN)`)  
+  Verifica disponibilidad y stock antes de registrar la reserva.
+- **Actualizar baño** (`actualizar_baño(id_bano INT, nombre TEXT, descripcion TEXT, capacidad INT, encargado TEXT, precio NUMERIC, jabones INT, toallas INT)`)  
+  Permite actualizar detalles de un baño si no está ocupado.
+- **Alerta de stock bajo** (`alerta_producto_bajo()`)  
+  Retorna productos con stock menor a 10 unidades.
+- **Marcar baño en mantenimiento** (`mantenimiento_baño(id_bano INT, mantenimiento BOOLEAN)`)  
+  Cambia el estado de un baño entre "Disponible" y "Ocupado".
+
+---
+>>>>>>> Stashed changes
 
 # ELICITACIÓN
 
