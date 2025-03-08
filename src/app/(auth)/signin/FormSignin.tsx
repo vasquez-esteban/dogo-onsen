@@ -21,38 +21,59 @@ export function FormSignin() {
             type="email"
             placeholder="Correo"
             required
+            aria-describedby="email-error"
           />
           {state?.errors?.email && (
-            <p className="text-sm text-red-500">{state.errors.email}</p>
+           <p id="email-error" className="text-sm text-red-500">
+           {state.errors.email.join(", ") || "Ingresa un correo válido."}
+         </p>
           )}
         </div>
+
         <div className="grid gap-2">
-          <div className="flex items-center">
-            <Label htmlFor="password">Contraseña</Label>
-          </div>
+          <Label htmlFor="password">Contraseña</Label>
           <Input
             id="password"
             name="password"
             type="password"
             placeholder="Contraseña"
             required
+            aria-describedby="password-error"
           />
           {state?.errors?.password && (
-            <p className="text-sm text-red-500">{state.errors.password}</p>
-          )}
-        </div>
-        {state?.message && (
-          <p className="text-sm text-red-500">{state.message}</p>
+            <div id="password-error" className="text-sm text-red-500">
+            <p>La contraseña debe:</p>
+            <ul>
+              {state.errors.password.map((error) => (
+                <li key={error}>- {error}</li>
+              ))}
+            </ul>
+          </div>
         )}
+      </div>
+
+      {state?.message && (
+          <p className="text-sm text-red-500" aria-live="polite">
+            {state.message}
+          </p>
+        )}
+
         <Button aria-disabled={pending} type="submit" className="w-full">
           {pending ? "Ingresando..." : "Ingresar"}
         </Button>
+
+      <div className="mt-4 text-center text-sm">
+        ¿Olvidaste tu contraseña?{" "}
+        <Link href="/forgot-password" className="underline underline-offset-4">
+        Recuperar
+        </Link>
       </div>
       <div className="mt-4 text-center text-sm">
         ¿Aún no tienes cuenta?{" "}
         <Link href="/signup" className="underline underline-offset-4">
           Registrarse
         </Link>
+      </div>
       </div>
     </form>
   );

@@ -43,12 +43,19 @@ export async function updateSession(request: NextRequest) {
     !user &&
     !request.nextUrl.pathname.startsWith("/signin") &&
     !request.nextUrl.pathname.startsWith("/signup") &&
+    !request.nextUrl.pathname.startsWith("/forgot-password") &&
+    !request.nextUrl.pathname.startsWith("/reset-password") &&
     !request.nextUrl.pathname.startsWith("/auth")
   ) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone();
     url.pathname = "/signin";
     return NextResponse.redirect(url);
+  }
+
+  // Si el usuario está autenticado y trata de ir a /signin o /signup, redirigirlo al home
+  if (user && ["/signin", "/signup"].includes(request.nextUrl.pathname)) {
+    return NextResponse.redirect(new URL("/", request.url)); // Redirige al home 
   }
 
   // Protect "/admin" routes
