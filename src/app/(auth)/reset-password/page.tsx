@@ -1,6 +1,8 @@
 import ResetPassword from "@/components/ui/ResetPassword";
 
-export default function ResetPasswordPage() {
+export const dynamic = 'force-dynamic';
+
+export default function Page() {
   return (
     <>
       <div className="mt-20 flex w-full justify-center">

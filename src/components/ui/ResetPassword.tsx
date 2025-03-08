@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "./button";
 import { resetPassword } from "@/actions/auth";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -9,6 +9,15 @@ const ResetPassword = () => {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const [pending, setPending] = useState<boolean>(false);
+  const [code, setCode] = useState<string | null>(null);
+
+
+  // Obtén el código de los parámetros de búsqueda solo en el cliente
+  useEffect(() => {
+    setCode(searchParams.get("code"));
+  }, [searchParams]);
+
+  
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setPending(true);
@@ -17,7 +26,7 @@ const ResetPassword = () => {
     const formData = new FormData(event.currentTarget);
     const result = await resetPassword(
       formData, 
-      searchParams.get("code") as string
+      code as string
     );
 
     if (result.status === "success"){

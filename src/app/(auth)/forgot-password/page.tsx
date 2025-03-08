@@ -1,6 +1,6 @@
 import ForgotPassword from "@/components/ui/ForgotPassword";
 
-export default function ForgotPasswordPage() {
+export default function Page() {
   return (
     <>
       <div className="mt-20 flex w-full justify-center">

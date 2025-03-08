@@ -11,6 +11,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 
+
 export async function signup(
   state: FormState,
   formData: FormData
@@ -34,8 +35,6 @@ export async function signup(
   // 4. Crear el nuevo usuario
   const { data, error: authError } = await supabase.auth.signUp(validateFields.data);
 
-
-
   
   if (authError) {
     return {
@@ -51,7 +50,7 @@ export async function signup(
   
 
   // Registro exitoso (requiere confirmación)
-
+  console.log("Registro exitoso.");
   return {
     ...state,
     errors: {},
@@ -125,7 +124,7 @@ export async function forgotPassword(state: FormState,
   const origin = (await headers()).get("origin");
 
   // Verificar si el usuario existe
-  const email = formData.get("email") as string;
+  {/*const email = formData.get("email") as string;
   const { data: user, error: userError } = await supabase
     .from("usuario") 
     .select("*")
@@ -134,7 +133,7 @@ export async function forgotPassword(state: FormState,
 
   if (userError || !user) {
     return { message: "El correo no está asociado a una cuenta." };
-  }
+  }*/}
 
   // Si el usuario existe, enviar el enlace de restablecimiento
   const { error } = await supabase.auth.resetPasswordForEmail(
@@ -150,6 +149,7 @@ export async function forgotPassword(state: FormState,
   
   return { message: "¡Restauracion exitosa!. Dirigete a tu correo para finalizar la restauracion." };
 }
+
 
 export async function resetPassword(formData: FormData, code: string) {
   const supabase = await createClient();
