@@ -85,10 +85,20 @@ export default function CardBath3({
       if (error) {
         console.error("Error al cancelar la reserva:", error);
         setError(error.message || "No se pudo cancelar la reserva.");
+        setReservado(true);
       } else {
-        alert(data); // Mostrar mensaje de éxito
-        setReservado(false);
-        setReservaId(null);
+        if (
+          data ==
+          "Error: No se puede cancelar la reserva con menos de 24 horas de anticipación."
+        ) {
+          setReservado(true);
+          alert(data);
+        } else {
+          alert(data);
+          // Mostrar mensaje de éxito
+          setReservado(false);
+          setReservaId(null);
+        }
       }
     } else {
       // Si no tiene reserva, redirigir a la página de reserva
