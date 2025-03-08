@@ -128,11 +128,6 @@ export default function FormEditarBano({ bano }: { bano: Bano }) {
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="maintenance">Mantenimiento</Label>
-            <Input id="maintenance" name="maintenance" type="checkbox" />
-          </div>
-
           <Button type="submit" className="w-full bg-gray-900">
             Guardar cambios
           </Button>
