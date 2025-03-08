@@ -5,6 +5,7 @@ import { useUserRole } from "@/hook/useUserRole";
 import { getImage } from "@/utils/supabase/imageMaps";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 interface Producto {
   id_producto: number;
@@ -16,6 +17,18 @@ const CardProduct = ({ producto }: { producto: Producto }) => {
   const router = useRouter();
   const { role, loading } = useUserRole();
   const imageSrc = getImage(producto.id_producto, "product");
+
+  useEffect(() => {
+    if (producto.cantidad < 10) {
+      alert(
+        `Advertencia: La cantidad del producto "${producto.nombre}" es menor a 10.`
+      );
+    }
+  }, [producto.cantidad, producto.nombre]);
+
+  if (loading) {
+    return <p>Cargando...</p>;
+  }
 
   if (loading) {
     return <p>Cargando...</p>;
@@ -34,9 +47,8 @@ const CardProduct = ({ producto }: { producto: Producto }) => {
         </CardHeader>
         <CardContent className="flex grow flex-col p-4">
           <CardTitle>{producto.nombre}</CardTitle>
-          {role === "Admin" && (
-          <p>Cantidad disponible: {producto.cantidad}</p> 
-          )}
+          {role === "Admin" && <p>Cantidad disponible: {producto.cantidad}</p>}
+          {}
 
           {/* Muestra el botón solo si el rol no es "Cliente" */}
           {role !== "Cliente" && (
