@@ -1,6 +1,6 @@
 import ResetPassword from "@/components/ui/ResetPassword";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export default function Page() {
   return (

@@ -138,6 +138,17 @@ export async function createReservation(
         },
       };
     }
+    if (
+      data === "Error: La cantidad de personas excede la capacidad del baño."
+    ) {
+      return {
+        success: false,
+        message: "Capacidad excedida.",
+        errors: {
+          name: ["El número de personas supera la capacidad del baño."],
+        },
+      };
+    }
 
     if (data && data !== "Reserva creada") {
       // Manejar cualquier otro mensaje de error no previsto

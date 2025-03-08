@@ -55,7 +55,7 @@ export async function updateSession(request: NextRequest) {
 
   // Si el usuario está autenticado y trata de ir a /signin o /signup, redirigirlo al home
   if (user && ["/signin", "/signup"].includes(request.nextUrl.pathname)) {
-    return NextResponse.redirect(new URL("/", request.url)); // Redirige al home 
+    return NextResponse.redirect(new URL("/", request.url)); // Redirige al home
   }
 
   // Protect "/admin" routes

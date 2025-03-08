@@ -1,9 +1,10 @@
 "use client";
+
 import { forgotPassword } from "@/actions/auth";
-import { Button } from "./button";
-import { useActionState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useActionState } from "react";
+import { Button } from "./button";
 
 const ForgotPassword = () => {
   const [state, action, pending] = useActionState(forgotPassword, undefined);
@@ -21,9 +22,9 @@ const ForgotPassword = () => {
             aria-describedby="email-error"
           />
           {state?.errors?.email && (
-           <p id="email-error" className="text-sm text-red-500">
-           {state.errors.email.join(", ") || "Ingresa un correo válido."}
-         </p>
+            <p id="email-error" className="text-sm text-red-500">
+              {state.errors.email.join(", ") || "Ingresa un correo válido."}
+            </p>
           )}
         </div>
 
@@ -45,8 +46,8 @@ const ForgotPassword = () => {
           {pending ? "Ingresando..." : "Ingresar"}
         </Button>
         <div className="flex flex-col gap-6"></div>
-        </div>
-      </form>
+      </div>
+    </form>
   );
 };
 

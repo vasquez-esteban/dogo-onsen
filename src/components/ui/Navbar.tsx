@@ -40,17 +40,17 @@ const Navbar = async () => {
             )
           ) : (
             <Link href={"/signin"}>
-            <Image
-              src={navlogo || "/placeholder.svg"}
-              className="h-8 w-6"
-              alt="Company logo"
-            />
+              <Image
+                src={navlogo || "/placeholder.svg"}
+                className="h-8 w-6"
+                alt="Company logo"
+              />
             </Link>
           )}
         </div>
 
         {/* Navigation Links */}
-        
+
         <ul className="mx-4 flex h-12 w-full items-center justify-center space-x-[3vw] rounded-md bg-primarylight">
           {displayLinks.map((link) => (
             <li key={link.href}>

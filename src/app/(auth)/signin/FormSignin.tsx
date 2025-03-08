@@ -24,9 +24,9 @@ export function FormSignin() {
             aria-describedby="email-error"
           />
           {state?.errors?.email && (
-           <p id="email-error" className="text-sm text-red-500">
-           {state.errors.email.join(", ") || "Ingresa un correo válido."}
-         </p>
+            <p id="email-error" className="text-sm text-red-500">
+              {state.errors.email.join(", ") || "Ingresa un correo válido."}
+            </p>
           )}
         </div>
 
@@ -42,17 +42,17 @@ export function FormSignin() {
           />
           {state?.errors?.password && (
             <div id="password-error" className="text-sm text-red-500">
-            <p>La contraseña debe:</p>
-            <ul>
-              {state.errors.password.map((error) => (
-                <li key={error}>- {error}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
+              <p>La contraseña debe:</p>
+              <ul>
+                {state.errors.password.map((error) => (
+                  <li key={error}>- {error}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
 
-      {state?.message && (
+        {state?.message && (
           <p className="text-sm text-red-500" aria-live="polite">
             {state.message}
           </p>
@@ -62,18 +62,21 @@ export function FormSignin() {
           {pending ? "Ingresando..." : "Ingresar"}
         </Button>
 
-      <div className="mt-4 text-center text-sm">
-        ¿Olvidaste tu contraseña?{" "}
-        <Link href="/forgot-password" className="underline underline-offset-4">
-        Recuperar
-        </Link>
-      </div>
-      <div className="mt-4 text-center text-sm">
-        ¿Aún no tienes cuenta?{" "}
-        <Link href="/signup" className="underline underline-offset-4">
-          Registrarse
-        </Link>
-      </div>
+        <div className="mt-4 text-center text-sm">
+          ¿Olvidaste tu contraseña?{" "}
+          <Link
+            href="/forgot-password"
+            className="underline underline-offset-4"
+          >
+            Recuperar
+          </Link>
+        </div>
+        <div className="mt-4 text-center text-sm">
+          ¿Aún no tienes cuenta?{" "}
+          <Link href="/signup" className="underline underline-offset-4">
+            Registrarse
+          </Link>
+        </div>
       </div>
     </form>
   );
